@@ -19,6 +19,10 @@
             
             <a href="{{route('books.index')}}">Books</a>
              <a href="{{route('books.create')}}">Add Books</a>
+
+               
+                <a href="{{route('show.login')}}" class="btn">Login</a>
+                 <a href="{{route('show.register')}}" class="btn">Register</a>
         </nav>
     
     <main class="container">
