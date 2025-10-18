@@ -1,0 +1,294 @@
+/* ---------------------------------- */
+/* 🌐 Base Styles */
+/* ---------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+   
+    background-size: contain;       /* makes the full image visible */
+    background-position: center;    /* center the image */
+    background-repeat: no-repeat;   /* no tiling */
+    
+    /* fallback color */
+    background-color: #bfdbfe;
+
+    color: #0d0d0e;
+    font-family: "Rubik", sans-serif;
+    min-height: 100vh;
+}
+
+
+
+/* Headings */
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0e0e0e;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+ul {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  list-style: none;
+  padding-left: 0;
+}
+
+p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ---------------------------------- */
+/* 🧭 Navigation Bar */
+/* ---------------------------------- */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background-color: #f9fafb;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.1);
+  font-family: "Rubik", sans-serif;
+}
+
+/* Nav Header (Logo Text) */
+nav .header {
+  margin-right: auto;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  letter-spacing: 1px;
+}
+
+/* Nav Links */
+nav a {
+  text-decoration: none;
+  color: #1e3a8a;
+  font-weight: 500;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+  padding-bottom: 2px;
+  text-align: center;
+  padding-right: 8px;
+}
+
+nav a:hover {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+}
+
+header h1 {
+  margin-right: auto;
+}
+
+/* ---------------------------------- */
+/* 📝 Forms */
+/* ---------------------------------- */
+form {
+  max-width: 640px;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #93c5fd;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* ---------------------------------- */
+/* 📦 Utility Classes */
+/* ---------------------------------- */
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  border: 1px solid #bfdbfe;
+  padding: 0.75rem 0.75rem;
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.highlight {
+  border-left: 4px solid #3b82f6;
+}
+
+.btn {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #afcae6;
+  color: #000000;
+  transition: all 0.2s ease-in-out;
+}
+.btn-danger {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #8f0404ff;
+  color: #000000;
+  transition: all 0.2s ease-in-out;
+  margin-left: 5.5rem;
+}
+
+.btn:hover {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* ---------------------------------- */
+/* 🏠 Homepage (with Gradient Background) */
+/* ---------------------------------- */
+body.homepage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  text-align: center;
+  padding-top: 100px;
+
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
+  /* diagonal blue gradient */
+}
+
+/* Title text */
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 1.5rem;
+}
+
+/* Login button */
+.btn_title {
+  display: inline-block;
+  text-decoration: none;
+  background-color: #3b82f6;
+  color: #ffffff;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+}
+
+.btn_title:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+}
+/* ---------------------------------- */
+/* 🗂 Book & Genre Card Styling */
+/* ---------------------------------- */
+.book-card-container {
+  max-width: 768px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff; /* white background */
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* vertical spacing between sections */
+}
+
+.book-card-container h2,
+.book-card-container h3 {
+  margin: 0;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.book-card-container p {
+  color: #374151; /* gray-700 */
+  line-height: 1.5;
+  margin: 0.25rem 0;
+}
+
+.book-card-container hr {
+  border-color: #bfdbfe; /* light blue separator */
+  margin: 1rem 0;
+}
+
+.book-card-genre,
+.book-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.0rem; /* small gap between text lines */
+}
+.book-card-info p{
+  font-size: 1rem;
+  color: #4b5563; /* gray-600 */
+  
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 640px) {
+  .book-card-container {
+    padding: 1rem;
+  }
+}
+
+.alert-success {
+    max-width: 500px;       
+    margin: 0 auto;    
+   padding-right: 1rem;
+    padding-left: 1rem; 
+    padding-top: 0.75rem;  
+    padding-bottom: 0.75rem;   
+    background-color: #d1fae5; 
+    border: 1px solid #34d399; 
+    color: #065f46;        
+    border-radius: 0.5rem;  
+    text-align: center;     
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); 
+    font-weight: 500;
+}
+
+
+.alert-success.show {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
