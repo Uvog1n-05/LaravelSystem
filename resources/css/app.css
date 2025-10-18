@@ -9,11 +9,11 @@
 
 body {
    
-    background-size: contain;       /* makes the full image visible */
-    background-position: center;    /* center the image */
-    background-repeat: no-repeat;   /* no tiling */
+    background-size: contain;     
+    background-position: center;    
+    background-repeat: no-repeat; 
     
-    /* fallback color */
+ 
     background-color: #bfdbfe;
 
     color: #0d0d0e;
@@ -23,7 +23,7 @@ body {
 
 
 
-/* Headings */
+
 h1 {
   font-size: 1.5rem;
   font-weight: 700;
