@@ -8,19 +8,28 @@
 }
 
 body {
-   
-    background-size: contain;     
-    background-position: center;    
-    background-repeat: no-repeat; 
-    
- 
-    background-color: #bfdbfe;
-
-    color: #0d0d0e;
+    position: relative; /* needed for pseudo-element */
     font-family: "Rubik", sans-serif;
     min-height: 100vh;
+    color: #0d0d0e; /* text color */
 }
 
+/* Blurred background image */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/public/img/tmc.jpg'); /* your image in public/img */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(3px); /* adjust blur level */
+    z-index: -1;        /* behind all content */
+    pointer-events: none; /* so clicks go through */
+}
 
 
 
@@ -176,23 +185,50 @@ textarea:focus {
 /* 🏠 Homepage (with Gradient Background) */
 /* ---------------------------------- */
 body.homepage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
-  text-align: center;
-  padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* center content vertically */
+    height: 100vh;
+    text-align: center;
+    padding-top: 100px;
 
-  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
-  /* diagonal blue gradient */
+    /* Background image with gradient fallback */
+   
+    background-size: cover;       /* fill screen without repeating */
+    background-position: center;  /* center image */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #93c5fd;    /* fallback color if image doesn't load */
+    color: #ffffff;               /* text color on top of image */
 }
+
+
+body.homepage::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* adjust opacity as needed */
+    pointer-events: none;
+}
+.log_container {
+    position: relative;
+    z-index: 1; 
+    background-color: #0a56d0ff;
+    padding: 2rem 4rem;
+    border-radius: 1rem;
+   
+}
+
 
 /* Title text */
 .title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #fef9f9ff;
   margin-bottom: 1.5rem;
 }
 
@@ -290,5 +326,29 @@ body.homepage {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+.create_container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+  background-color: #f9f9f9ff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+.create_container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1e3a8a;
+  weight: 700;
+  size: 2rem;
+}
+.login_container {
+    position: relative;
+    z-index: 1; 
+    background-color: #edeff3ff;
+    padding: 2rem 4rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
 }
 

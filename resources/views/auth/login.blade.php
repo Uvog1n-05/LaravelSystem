@@ -1,6 +1,6 @@
 <x-layout>
         
-    <form action="{{route('login')}}" method="POST">
+    <form class="login_container" action="{{route('login')}}" method="POST">
     <h2>Login Your Account</h2>
 
     @csrf

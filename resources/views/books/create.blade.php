@@ -1,7 +1,9 @@
 <x-layout>
-    <h1>Add a New Book</h1>
+    
+    <form class="create_container" action="{{ route('books.store') }}"method="POST">
+       <h1>Add a New Book</h1>
 
-    <form  action="{{ route('books.store') }}"method="POST">
+       
         @csrf
    
         <label for="title">Book Title:</label>
