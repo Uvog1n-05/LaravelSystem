@@ -1,37 +1,48 @@
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=`, initial-scale=1.0">
-        <title>BOOKS nav</title>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=`, initial-scale=1.0">
+            <title>BOOKS nav</title>
 
-        @vite('resources/css/app.css')
+            @vite('resources/css/app.css')
 
-    </head>
-    <body>
-    @if (session('success'))
-        <div class="alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+        </head>
+        <body>
+        @if (session('success'))
+            <div class="alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            <nav >
-                <header class="header">TMC LIBRARY</header>
-                
-                <a href="{{route('books.index')}}">Books</a>
-                <a href="{{route('books.create')}}">Add Books</a>
+             <nav >
+                    <header class="header">TMC LIBRARY</header>
+                    @auth
+                   <a href="{{route('books.index')}}">Books</a> 
+                     @endauth
+                 @guest 
+                 <a href="{{route('show.login')}}" class="btn">Login</a>
+                 <a href="{{route('show.register')}}" class="btn">Register</a>
+                @endguest
 
-                
-                    <a href="{{route('show.login')}}" class="btn">Login</a>
-                    <a href="{{route('show.register')}}" class="btn">Register</a>
-                    <form action="{{ route('logout')}}" method="POST">
-                        @csrf
-                        <button class="btn">Logout</button>
-                    </form>
+                <span class="border-r-2"> 
+                    Hi there, {{ auth()->user() ? auth()->user()->name : 'Guest' }}!
+                    
+                </span>
+                    @auth
+                      
+               
+                     <a href="{{route('books.create')}}">Add Books</a>
+                 <form action="{{ route('logout')}}" method="POST">
+                            @csrf
+                            <button class="btn">Logout</button>
+                  </form>
+                  @endauth
+
             </nav>
-        
-        <main class="container">
-            {{ $slot }}
-        </main>
             
-    </body>
-    </html>
+            <main class="container">
+                {{ $slot }}
+            </main>
+                
+        </body>
+        </html>

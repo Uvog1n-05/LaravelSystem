@@ -1,7 +1,7 @@
 <x-layout>
         
     <form action="{{route('login')}}" method="POST">
-    <h2>Login</h2>
+    <h2>Login Your Account</h2>
 
     @csrf
     <label for="email">Email</label>
@@ -15,7 +15,7 @@
         <label for="password">Email</label>
     <input 
         type="password"
-        name="passwprd"
+        name="password"
         required
             >
     <button class="btn" type="submit">Login</button>
