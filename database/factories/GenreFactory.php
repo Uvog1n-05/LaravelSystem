@@ -28,6 +28,10 @@ class GenreFactory extends Factory
         'Non-fiction',
         'Adventure',
         'Drama',
+        'Romance',
+        'Comedy',
+        'Action',
+        'Sci-fi',
     ]),
     
         'description' =>fake()->realText(10),

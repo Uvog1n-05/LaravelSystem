@@ -4,6 +4,7 @@
     <h2>Login Your Account</h2>
 
     @csrf
+    
     <label for="email">Email</label>
     <input type="text"
         name="email"

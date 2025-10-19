@@ -1,5 +1,5 @@
     <x-layout>
-
+      <div class="register_container">
     <form  action="{{route('register')}}" method="POST">
     <h2>Register New Account</h2>
 
@@ -35,7 +35,7 @@
         
         >
    <button type="submit" class="btn mt-4">Register</button>
-
+</div>
     <!-- validation errors -->
     @if ($errors->any())
       <ul class="px-4 py-2 bg-red-100">
