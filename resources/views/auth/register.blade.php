@@ -1,7 +1,7 @@
     <x-layout>
 
     <form  action="{{route('register')}}" method="POST">
-    <h2>Register</h2>
+    <h2>Register New Account</h2>
 
     @csrf
     <label for="email">Name</label>

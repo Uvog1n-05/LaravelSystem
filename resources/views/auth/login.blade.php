@@ -12,7 +12,7 @@
         required
         
         >
-        <label for="password">Email</label>
+        <label for="password">Password</label>
     <input 
         type="password"
         name="password"
