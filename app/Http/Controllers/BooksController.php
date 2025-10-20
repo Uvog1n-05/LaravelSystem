@@ -7,14 +7,24 @@ use App\Models\Books;
 use App\Models\Genre;
 class BooksController extends Controller
 {
-    public function index() {
-
-     $books = \App\Models\Books::with('genre')->orderby('created_at','desc')->paginate(10);
-
-       
-      return view('/books.index',["books"=>$books]);
-
-     
+    public function index(Request $request) {
+        $query = \App\Models\Books::with('genre');
+        
+        if ($request->search) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('author', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereHas('genre', function($q) use ($searchTerm) {
+                      $q->where('genre_name', 'LIKE', "%{$searchTerm}%");
+                  });
+            });
+        }
+        
+        $books = $query->orderBy('created_at', 'desc')->paginate(12);
+        $books->appends(['search' => $request->search]);
+        
+        return view('books.index', ['books' => $books]);
     }
 
     public function show(Books $books) {

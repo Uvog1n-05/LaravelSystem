@@ -10,6 +10,7 @@
         <hr>
 
         <div class="book-card-info">
+            <h1>{{ $books->title }}</h1>
             <h2>Book Number: {{ $books->id }}</h2>
             <p><strong>About Book:</strong></p>
             <p>{{ $books->about }}</p>
