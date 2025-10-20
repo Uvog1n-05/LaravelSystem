@@ -17,6 +17,9 @@
 
         <nav>
             <header class="header">TMC LIBRARY</header>
+              <span class="border-r-2"> 
+                Hi there, {{ auth()->user() ? auth()->user()->name : 'Guest' }}!
+            </span>
             @auth
                 <a href="{{route('books.index')}}">Books</a> 
             @endauth
@@ -25,9 +28,7 @@
                 <a href="{{route('show.register')}}" class="btn">Register</a>
             @endguest
 
-            <span class="border-r-2"> 
-                Hi there, {{ auth()->user() ? auth()->user()->name : 'Guest' }}!
-            </span>
+          
             
             @auth
                 <a href="{{route('books.create')}}">Add Books</a>
