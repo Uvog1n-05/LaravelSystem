@@ -15,11 +15,12 @@
             <p><strong>About Book:</strong></p>
             <p>{{ $books->about }}</p>
         </div>
-    </div>
-
-    <form action="{{ route('books.destroy',$books->id )}}" method="POST">
+         <form action="{{ route('books.destroy',$books->id )}}" method="POST">
         @csrf
        @method('DELETE')
         <button class="btn-danger" type="submit">Delete Book</button>
     </form>
+    </div>
+
+   
 </x-layout>
