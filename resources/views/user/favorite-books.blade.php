@@ -9,8 +9,8 @@
             <div class="in-progress-container">
                 <div class="in-progress-content">
                     <i class="fas fa-tools construction-icon"></i>
-                    <h2>Favorites Page Under Construction</h2>
-                    <p>We're building a special place for all your favorite books!</p>
+                    <h2>Kalma sata </h2>
+                    <p>Let me sleep.....</p>
                     <div class="feature-list">
                         <p>Coming Soon:</p>
                         <ul>

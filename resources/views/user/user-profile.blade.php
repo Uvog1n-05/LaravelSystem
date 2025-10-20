@@ -9,7 +9,7 @@
             <div class="in-progress-container">
                 <div class="in-progress-content">
                     <i class="fas fa-tools construction-icon"></i>
-                    <h2>Wala pani ma human kalma sa</h2>
+                    <h2>Wala pani ma human kalma sata</h2>
                     <p>Patuga sa inyong programmer</p>
                     <div class="feature-list">
                         <p>Coming Soon:</p>
