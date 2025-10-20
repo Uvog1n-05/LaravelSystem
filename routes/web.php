@@ -24,5 +24,15 @@
     Route::get('/books/{books}', 'show')->name ('books.show');
     Route::post('/books',  'store')->name ('books.store');
     Route::delete('/books/{books}', 'destroy')->name ('books.destroy');
+
+
+    Route::get('/user/user-profile', function () {
+        return view('user.user-profile');
+    })->name('user.profile');
+
+    Route::get('/user/favorite-books', function () {
+        return view('user.favorite-books');
+    })->name('user.favorite');   
+
     });
 
