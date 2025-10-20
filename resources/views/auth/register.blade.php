@@ -55,7 +55,7 @@
                 <button type="submit" class="btn">Create Account</button>
 
                 @if ($errors->any())
-                    <ul>
+                    <ul >
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
