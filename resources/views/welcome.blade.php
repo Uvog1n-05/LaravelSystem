@@ -34,6 +34,8 @@
                         </a>
                         <a href="{{ route('show.register') }}" class="btn">
                             <i class="fas fa-user-plus"></i> Register
+
+                            
                         </a>
                     </div>
                 </div>
