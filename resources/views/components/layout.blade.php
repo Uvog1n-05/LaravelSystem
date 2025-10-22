@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOOKS nav</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/css/user-dashboard.css'])
 
     
 </head>
@@ -30,6 +30,11 @@
                     Hi there, {{ auth()->user() ? auth()->user()->name : 'Guest' }}!
                 </span>
                 @auth
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
+                        <a href="{{ route('admin.users') }}"><i class="fas fa-users"></i> Manage Users</a>
+                        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0.5rem 0;"></div>
+                    @endif
                     <a href="{{route('books.index')}}"><i class="fas fa-book"></i> Books</a>
                     <a href="{{route('books.create')}}"><i class="fas fa-plus-circle"></i> Add Book</a>
                     <a href="{{ route('user.favorite') }}"><i class="fas fa-heart"></i> Favorites</a>

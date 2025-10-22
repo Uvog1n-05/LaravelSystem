@@ -49,9 +49,13 @@ class BooksController extends Controller
          'about' => 'required',
         'number_of_books' => 'required|integer|min:1|max:20', 
         'genre_id' => 'required|exists:genres,id',
-]);
-        Books::create($validated);
-        return redirect()->route('books.index') ->with('success', 'Book created successfully.');
+    ]);
+
+    // Add the current user's ID to the validated data
+    $validated['user_id'] = auth()->id();
+    
+    Books::create($validated);
+    return redirect()->route('books.index')->with('success', 'Book created successfully.');
     }
 
     public function destroy(Books $books) {

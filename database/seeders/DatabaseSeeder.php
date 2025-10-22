@@ -14,18 +14,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // Create admin user
+        \App\Models\User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@tmc.com',
+            'password' => 'admin123',
+            'role' => 'admin'
+        ]);
 
-     //  User::factory()->create([
-       //     'name' => 'Test User',
-       //     'email' => 'test@example.com',
-      // ]);
-       $this->call([
-
-   GenreSeeder::class,
-    BooksSeeder::class,
-
-]);
+        // Run other seeders
+        $this->call([
+            GenreSeeder::class,
+            BooksSeeder::class,
+        ]);
 
 
     }
