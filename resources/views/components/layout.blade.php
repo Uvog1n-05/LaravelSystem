@@ -4,93 +4,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOOKS nav</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>AllReads Library</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/css/user-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    @vite(['resources/css/app.css'])
+    <script src="https://cdn.tailwindcss.com"></script>
 
     
 </head>
 <body>
-    <div class="site-wraper">
+    <div class="min-h-screen bg-gray-50">
+        <!-- Top Navigation Bar -->
+        <nav class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <!-- Logo -->
+                        <div class="flex-shrink-0 flex items-center">
+                            <span class="text-xl font-semibold text-gray-800">TMC LIBRARY</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <div class="flex items-center sm:hidden">
+                        <button class="sidebar-toggle inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" onclick="toggleSidebar()">
+                            <i class="fas fa-bars w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
         @if (session('success'))
-            <div class="alert-success">
+            <div class="fixed top-4 right-4 z-50 bg-green-50 text-green-800 px-4 py-3 rounded-lg shadow-lg flex items-center border border-green-200" 
+                x-data="{ show: true }" 
+                x-show="show" 
+                x-init="setTimeout(() => show = false, 3000)">
+                <i class="fas fa-check-circle mr-2"></i>
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Sidebar Toggle Button -->
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-            <i class="fas fa-bars"></i>
-        </button>
-
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-links">
-                <span class="border-r-2" style="color: white; margin-bottom: 1rem;"> 
-                    Hi there, {{ auth()->user() ? auth()->user()->name : 'Guest' }}!
-                </span>
-                @auth
-                    @if(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
-                        <a href="{{ route('admin.users') }}"><i class="fas fa-users"></i> Manage Users</a>
-                        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0.5rem 0;"></div>
-                    @endif
-                    <a href="{{route('books.index')}}"><i class="fas fa-book"></i> Books</a>
-                    <a href="{{route('books.create')}}"><i class="fas fa-plus-circle"></i> Add Book</a>
-                    <a href="{{ route('user.favorite') }}"><i class="fas fa-heart"></i> Favorites</a>
-                    <a href="#"><i class="fas fa-history"></i> History</a>
-                    <a href="{{ route('user.profile') }}"><i class="fas fa-user"></i> Profile</a>
-                    <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-                        @csrf
-                        <button type="submit" style="color: #e2e8f0; width: 100%; text-align: left; padding: 0.75rem 1rem; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                @endauth
-                @guest 
-                    <a href="{{route('show.login')}}" class="btn"><i class="fas fa-sign-in-alt"></i> Login</a>
-                    <a href="{{route('show.register')}}" class="btn"><i class="fas fa-user-plus"></i> Register</a>
-                @endguest
+        <div class="sidebar fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out bg-gray-800">
+            <div class="flex flex-col h-full">
+                <div class="px-4 py-6 border-b border-gray-700">
+                    <div class="flex items-center space-x-3">
+                        <div class="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">
+                                {{ auth()->user() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'G' }}
+                            </span>
+                        </div>
+                        <div class="text-white">
+                            Hi, {{ auth()->user() ? auth()->user()->name : 'Guest' }}!
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 px-2 py-4 space-y-1">
+                    @auth
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                                <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i> Admin Dashboard
+                            </a>
+                            <a href="{{ route('admin.users') }}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                                <i class="fas fa-users w-5 h-5 mr-3"></i> Manage Users
+                            </a>
+                            <a href="{{route('books.create')}}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                                <i class="fas fa-plus-circle w-5 h-5 mr-3"></i> Add Book
+                            </a>
+                            <div class="border-t border-gray-700 my-4"></div>
+                        @else
+                            <a href="{{ route('user.dashboard') }}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                                <i class="fas fa-home w-5 h-5 mr-3"></i> Dashboard
+                            </a>
+                        @endif
+                        
+                        <a href="{{route('books.index')}}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-book w-5 h-5 mr-3"></i> Books
+                        </a>
+                        <a href="{{ route('user.favorite') }}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-heart w-5 h-5 mr-3"></i> Favorites
+                        </a>
+                        <a href="{{ route('user.profile') }}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-user w-5 h-5 mr-3"></i> Profile
+                        </a>
+                        <a href="#" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-history w-5 h-5 mr-3"></i> History
+                        </a>
+                    @endauth
+                </div>
+                
+                <div class="px-2 py-4 border-t border-gray-700">
+                    @auth
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 w-full">
+                                <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i> Logout
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{route('show.login')}}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-sign-in-alt w-5 h-5 mr-3"></i> Login
+                        </a>
+                        <a href="{{route('show.register')}}" class="group flex items-center px-4 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-user-plus w-5 h-5 mr-3"></i> Register
+                        </a>
+                    @endauth
+                </div>
             </div>
         </div>
 
-        <nav class="main-nav">
-            <header class=" header "></i>TMC LIBRARY</header>
-        </nav>
-
-            <script>
-                function toggleSidebar() {
-                    const sidebar = document.querySelector('.sidebar');
-                    const toggleBtn = document.querySelector('.sidebar-toggle i');
-                    
-                    sidebar.classList.toggle('active');
-                    
-                    // Change icon based on sidebar state
-                    if (sidebar.classList.contains('active')) {
-                        toggleBtn.classList.remove('fa-bars');
-                        toggleBtn.classList.add('fa-times');
-                    } else {
-                        toggleBtn.classList.remove('fa-times');
-                        toggleBtn.classList.add('fa-bars');
-                    }
-                }
-
-                // Close sidebar when clicking outside
-                document.addEventListener('click', function(event) {
-                    const sidebar = document.querySelector('.sidebar');
-                    const toggleBtn = document.querySelector('.sidebar-toggle');
-                    
-                    if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
-                        toggleSidebar();
-                    }
-                });
-            </script>
-        </nav>
-        
-        <main class="site-content">
-            {{ $slot }}
-        </main>
+        <!-- Main Content -->
+        <div class="sm:ml-64">
+            <main class="py-6">
+                {{ $slot }}
+            </main>
+        </div>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle i');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                toggleBtn.classList.remove('fa-bars');
+                toggleBtn.classList.add('fa-times');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                toggleBtn.classList.remove('fa-times');
+                toggleBtn.classList.add('fa-bars');
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth < 640) {  // sm breakpoint
+                const sidebar = document.querySelector('.sidebar');
+                const toggleBtn = document.querySelector('.sidebar-toggle');
+                
+                if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && !sidebar.classList.contains('-translate-x-full')) {
+                    toggleSidebar();
+                }
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth >= 640) {  // sm breakpoint
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+    </script>
 </body>
 </html>
   

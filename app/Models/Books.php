@@ -10,7 +10,9 @@ class Books extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['title', 'author', 'about', 'number_of_books', 'genre_id', 'user_id'];
+    protected $fillable = ['title', 'author', 'about', 'number_of_books', 'genre_id', 'user_id', 'cover_image'];
+
+    protected $appends = ['cover_image_url'];
 
     public function genre()
     {
@@ -20,5 +22,19 @@ class Books extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getCoverImageUrlAttribute()
+    {
+        if ($this->cover_image) {
+            return asset('storage/books/' . $this->cover_image);
+        }
+        return asset('img/default-book-cover.jpg');
+    }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'book_user_favorites', 'book_id', 'user_id')
+                    ->withTimestamps();
     }
 }

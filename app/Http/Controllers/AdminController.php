@@ -34,4 +34,21 @@ class AdminController extends Controller
 
         return back()->with('success', 'User role updated successfully');
     }
+
+    public function books()
+    {
+        $books = \App\Models\Books::with(['user', 'genre'])->latest()->paginate(10);
+        return view('admin.books', compact('books'));
+    }
+
+    public function genres()
+    {
+        $genres = \App\Models\Genre::withCount('books')->latest()->paginate(10);
+        return view('admin.genres', compact('genres'));
+    }
+
+    public function settings()
+    {
+        return view('admin.settings');
+    }
 }

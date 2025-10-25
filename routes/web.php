@@ -27,6 +27,9 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/users', [App\Http\Controllers\AdminController::class, 'users'])->name('admin.users');
     Route::patch('/users/{user}/role', [App\Http\Controllers\AdminController::class, 'updateUserRole'])->name('admin.users.update-role');
+    Route::get('/books', [App\Http\Controllers\AdminController::class, 'books'])->name('admin.books');
+    Route::get('/genres', [App\Http\Controllers\AdminController::class, 'genres'])->name('admin.genres');
+    Route::get('/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('admin.settings');
 });
 
 Route::middleware('auth')->controller(BooksController::class)->group(function () {     
@@ -45,9 +48,9 @@ Route::middleware('auth')->controller(BooksController::class)->group(function ()
         return view('user.user-profile');
     })->name('user.profile');
 
-    Route::get('/user/favorite-books', function () {
-        return view('user.favorite-books');
-    })->name('user.favorite');   
+    Route::get('/user/favorite-books', [BooksController::class, 'favorites'])->name('user.favorite');
+    Route::post('/books/{book}/favorite', [BooksController::class, 'addToFavorites'])->name('user.favorite.add');
+    Route::delete('/books/{book}/favorite', [BooksController::class, 'removeFromFavorites'])->name('user.favorite.remove');
 
     });
 

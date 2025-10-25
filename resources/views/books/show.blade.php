@@ -1,26 +1,67 @@
 <x-layout>
-    <div class="book-card-container">
-       
-        <div class="book-card-genre">
-            <h3>Genre Information</h3>
-            <p><strong>Genre:</strong> {{ $books->genre->genre_name }}</p>
-            <p><strong>Genre Info:</strong> {{ $books->genre->description }}</p>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="flex flex-col md:flex-row">
+            <!-- Book Cover and Quick Info -->
+            <div class="md:w-1/3 p-6 bg-gray-50">
+                <div class="aspect-w-3 aspect-h-4 rounded-lg overflow-hidden shadow-md mb-4">
+                    <img src="{{ $books->cover_image_url }}" alt="{{ $books->title }}" class="object-cover">
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Book ID:</span>
+                        <span class="text-sm font-medium text-gray-900">#{{ $books->id }}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                            {{ $books->genre->genre_name }}
+                        </span>
+                        <span class="px-3 py-1 rounded-full text-sm {{ $books->number_of_books > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                            {{ $books->number_of_books }} copies available
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-        <hr>
+            <!-- Book Details -->
+            <div class="md:w-2/3 p-6 md:border-l border-gray-200">
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $books->title }}</h1>
+                    <p class="text-lg text-gray-600">by {{ $books->author }}</p>
+                </div>
 
-        <div class="book-card-info">
-            <h1>{{ $books->title }}</h1>
-            <h2>Book Number: {{ $books->id }}</h2>
-            <p><strong>About Book:</strong></p>
-            <p>{{ $books->about }}</p>
+                <div class="prose max-w-none mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">About this Book</h3>
+                    <p class="text-gray-600 leading-relaxed">{{ $books->about }}</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Genre Information</h3>
+                    <p class="text-gray-600">{{ $books->genre->description ?? 'No genre description available.' }}</p>
+                </div>
+
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+                    @if(auth()->user() && auth()->user()->isAdmin())
+                        <form action="{{ route('books.destroy', $books->id )}}" method="POST" class="inline-flex">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 border border-red-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <i class="fas fa-trash-alt mr-2"></i>
+                                Delete Book
+                            </button>
+                        </form>
+                    @endif
+                    <a href="{{ route('books.index') }}" 
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Books
+                    </a>
+                </div>
+            </div>
         </div>
-         <form action="{{ route('books.destroy',$books->id )}}" method="POST">
-        @csrf
-       @method('DELETE')
-        <button class="btn-danger" type="submit">Delete Book</button>
-    </form>
     </div>
+</div>
 
    
 </x-layout>

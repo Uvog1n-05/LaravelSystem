@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Book;
+use App\Models\Books;
 
 class Genre extends Model
 { 
@@ -16,6 +16,6 @@ class Genre extends Model
     // One genre has many books
     public function books()
     {
-        return $this->hasMany(Book::class);
+        return $this->hasMany(Books::class);
     }
 }
