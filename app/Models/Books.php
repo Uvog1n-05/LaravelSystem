@@ -37,4 +37,20 @@ class Books extends Model
         return $this->belongsToMany(User::class, 'book_user_favorites', 'book_id', 'user_id')
                     ->withTimestamps();
     }
+
+    public function borrows()
+    {
+        return $this->hasMany(BookBorrowing::class, 'book_id');
+    }
+
+    public function getAvailableCopiesAttribute()
+    {
+        $borrowedCount = $this->borrows()->whereNull('returned_date')->count();
+        return $this->number_of_books - $borrowedCount;
+    }
+
+    public function isAvailable()
+    {
+        return $this->available_copies > 0;
+    }
 }

@@ -44,9 +44,18 @@ Route::middleware('auth')->controller(BooksController::class)->group(function ()
         return view('user.dashboard');
     })->name('user.dashboard');
 
-    Route::get('/user/user-profile', function () {
-        return view('user.user-profile');
-    })->name('user.profile');
+    // User Profile Routes
+    Route::get('/user/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('user.profile');
+    Route::put('/user/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('user.profile.update');
+    Route::put('/user/profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('user.profile.password');
+
+    // Book Borrowing Routes
+    Route::middleware('auth')->group(function () {
+        Route::post('/books/{book}/borrow', [App\Http\Controllers\BookBorrowingController::class, 'borrow'])->name('books.borrow');
+        Route::put('/books/{book}/return', [App\Http\Controllers\BookBorrowingController::class, 'return'])->name('books.return');
+        Route::post('/books/{book}/extend', [App\Http\Controllers\BookBorrowingController::class, 'extend'])->name('books.extend');
+        Route::get('/books/history', [App\Http\Controllers\BookBorrowingController::class, 'history'])->name('books.history');
+    });
 
     Route::get('/user/favorite-books', [BooksController::class, 'favorites'])->name('user.favorite');
     Route::post('/books/{book}/favorite', [BooksController::class, 'addToFavorites'])->name('user.favorite.add');

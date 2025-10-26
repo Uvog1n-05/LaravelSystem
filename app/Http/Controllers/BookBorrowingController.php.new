@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Books;
+use App\Models\BookBorrowing;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class BookBorrowingController extends Controller
+{
+    private const MAX_BOOKS_PER_USER = 5;
+    private const MAX_EXTENSIONS = 2;
+    private const BORROW_PERIOD_DAYS = 14;
+    private const EXTENSION_DAYS = 7;
+
+    public function borrow(Books $book): RedirectResponse
+    {
+        if (!$book->isAvailable()) {
+            return back()->with('error', 'This book is currently not available for borrowing.');
+        }
+
+        $activeBorrows = BookBorrowing::where('user_id', auth()->id())
+            ->whereNull('returned_date')
+            ->count();
+
+        if ($activeBorrows >= self::MAX_BOOKS_PER_USER) {
+            return back()->with('error', 'You have reached the maximum number of books you can borrow (' . self::MAX_BOOKS_PER_USER . ').');
+        }
+
+        $existingBorrow = BookBorrowing::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->whereNull('returned_date')
+            ->first();
+
+        if ($existingBorrow) {
+            return back()->with('error', 'You have already borrowed this book.');
+        }
+
+        try {
+            DB::transaction(function () use ($book) {
+                BookBorrowing::create([
+                    'user_id' => auth()->id(),
+                    'book_id' => $book->id,
+                    'borrowed_date' => now(),
+                    'due_date' => now()->addDays(self::BORROW_PERIOD_DAYS),
+                    'extensions_count' => 0
+                ]);
+            });
+
+            return back()->with('success', 'Book borrowed successfully. Please return it by ' . 
+                now()->addDays(self::BORROW_PERIOD_DAYS)->format('M d, Y'));
+        } catch (\Exception $e) {
+            Log::error('Error borrowing book: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while processing your request.');
+        }
+    }
+
+    public function returnBook(Books $book): RedirectResponse
+    {
+        $borrow = BookBorrowing::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->whereNull('returned_date')
+            ->first();
+
+        if (!$borrow) {
+            return back()->with('error', 'No active borrow found for this book.');
+        }
+
+        try {
+            DB::transaction(function () use ($borrow) {
+                $borrow->update([
+                    'returned_date' => now()
+                ]);
+            });
+
+            return back()->with('success', 'Book returned successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error returning book: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while returning the book.');
+        }
+    }
+
+    public function extend(Books $book): RedirectResponse
+    {
+        $borrow = BookBorrowing::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->whereNull('returned_date')
+            ->first();
+
+        if (!$borrow) {
+            return back()->with('error', 'No active borrow found for this book.');
+        }
+
+        if ($borrow->isOverdue()) {
+            return back()->with('error', 'Cannot extend borrowing period for overdue books.');
+        }
+
+        if ($borrow->extensions_count >= self::MAX_EXTENSIONS) {
+            return back()->with('error', 'You have reached the maximum number of extensions for this book.');
+        }
+
+        try {
+            DB::transaction(function () use ($borrow) {
+                $borrow->update([
+                    'due_date' => Carbon::parse($borrow->due_date)->addDays(self::EXTENSION_DAYS),
+                    'extensions_count' => $borrow->extensions_count + 1
+                ]);
+            });
+
+            return back()->with('success', 'Borrowing period extended by ' . self::EXTENSION_DAYS . ' days.');
+        } catch (\Exception $e) {
+            Log::error('Error extending borrow period: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while extending the borrowing period.');
+        }
+    }
+
+    public function history(): View
+    {
+        $borrowings = BookBorrowing::where('user_id', auth()->id())
+            ->with(['book' => function ($query) {
+                $query->select('id', 'title', 'author', 'cover_image');
+            }])
+            ->orderBy('borrowed_date', 'desc')
+            ->paginate(10);
+
+        return view('user.borrowing-history', compact('borrowings'));
+    }
+
+    public function getOverdueBooks(): View
+    {
+        $overdueBooks = BookBorrowing::whereNull('returned_date')
+            ->where('due_date', '<', now())
+            ->with(['book', 'user'])
+            ->orderBy('due_date', 'asc')
+            ->paginate(15);
+
+        return view('admin.overdue-books', compact('overdueBooks'));
+    }
+}

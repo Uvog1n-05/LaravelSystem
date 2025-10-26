@@ -1,19 +1,154 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-@import 'components.css';
-@import 'book-cards.css';
-@import 'book-carousel.css';
-@import 'modern-pages.css';
+:root {
+    --color-primary: 37 99 235;
+    --color-primary-hover: 29 78 216;
+    --color-secondary: 75 85 99;
+    --color-secondary-hover: 55 65 81;
+    --color-success: 22 163 74;
+    --color-danger: 220 38 38;
+    --color-warning: 202 138 4;
+    --color-info: 37 99 235;
+}
 
-/* ---------------------------------- */
-/* 🌐 Base Styles */
-/* ---------------------------------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+    html {
+        @apply antialiased;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-900 font-sans min-h-screen;
+    }
+
+    h1 {
+        @apply text-3xl font-bold md:text-4xl;
+    }
+
+    h2 {
+        @apply text-2xl font-bold md:text-3xl;
+    }
+
+    h3 {
+        @apply text-xl font-bold md:text-2xl;
+    }
+
+    h4 {
+        @apply text-lg font-bold;
+    }
+
+    a {
+        @apply text-primary hover:text-primary-hover transition-colors;
+    }
+}
+
+@layer components {
+    /* Layout Structure */
+    .page-container {
+        @apply min-h-screen bg-gray-50 flex flex-col max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .main-content {
+        @apply flex-1 pt-16 sm:ml-64 bg-gray-50;
+    }
+
+    .content-wrapper {
+        @apply max-w-7xl mx-auto p-4 sm:p-6 lg:p-8;
+    }
+
+    /* Header & Navigation */
+    .header {
+        @apply fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200;
+    }
+
+    .header-content {
+        @apply h-16 px-4 flex items-center justify-between;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        @apply fixed inset-y-0 left-0 z-40 w-64 bg-gray-50 shadow-lg transform 
+               transition-transform duration-300 border-r border-gray-200 
+               overflow-y-auto text-gray-900;
+    }
+
+    .sidebar-header {
+        @apply sticky top-0 z-10 bg-white border-b border-gray-200 p-4;
+    }
+
+    .sidebar-nav {
+        @apply flex-1 px-2 py-4 space-y-1;
+    }
+
+    .sidebar-footer {
+        @apply sticky bottom-0 bg-white border-t border-gray-200 p-4;
+    }
+
+    /* Navigation Links */
+    .nav-link {
+        @apply flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors
+               text-gray-600 hover:bg-primary/5 hover:text-primary;
+
+        &.nav-link-active {
+            @apply bg-primary/10 text-primary;
+        }
+    }
+
+    .nav-icon {
+        @apply w-5 h-5 mr-3 flex-shrink-0;
+    }
+
+    .nav-text {
+        @apply truncate;
+    }
+
+    .nav-icon {
+        @apply w-5 h-5 mr-3 flex-shrink-0;
+    }
+
+    .nav-text {
+        @apply truncate;
+    }
+}
+
+@layer base {
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-900 font-sans;
+    }
+
+    h1 {
+        @apply text-3xl font-bold md:text-4xl;
+    }
+
+    h2 {
+        @apply text-2xl font-bold md:text-3xl;
+    }
+
+    h3 {
+        @apply text-xl font-bold md:text-2xl;
+    }
+
+    h4 {
+        @apply text-lg font-bold;
+    }
+    @screen sm {
+        h3 {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+    }
+
+    h4 {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        font-weight: 700;
+    }
 }
 
 /* Global Animations */
@@ -72,85 +207,160 @@
     }
 }
 
-html {
-  height: 100%;
-  scroll-behavior: smooth;
+@layer components {
+    /* Page container styles moved to main layout section */
+    .section {
+        @apply py-8 sm:py-12;
+    }
+
+    .grid-list {
+        @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+    }
+
+    /* Form Components */
+    .form-group {
+        @apply space-y-4;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .form-input {
+        @apply block w-full rounded-lg shadow-sm sm:text-sm;
+        @apply border-gray-300 focus:border-primary focus:ring-primary;
+    }
+
+    .form-error {
+        @apply mt-1 text-sm text-red-600;
+    }
+
+    /* Table Components */
+    .table-container {
+        @apply overflow-x-auto rounded-lg border border-gray-200;
+    }
+
+    .table-basic {
+        @apply min-w-full divide-y divide-gray-200;
+    }
+
+    .table-header {
+        @apply bg-gray-50;
+    }
+
+    .table-header th {
+        @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+    }
+
+    .table-row {
+        @apply bg-white hover:bg-gray-50 transition-colors;
+    }
+
+    .table-row td {
+        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+    }
+
+    /* Link Styles */
+    .link {
+        @apply text-primary hover:text-primary-hover hover:underline transition-colors;
+    }
+
+    .icon-button {
+        @apply p-2 text-secondary hover:text-secondary-hover rounded-full hover:bg-gray-100 transition-colors;
+    }
+
+    /* Book Components */
+    .book-card {
+        @apply flex flex-col bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
+    }
+
+    .book-card-image {
+        @apply aspect-[3/4] w-full rounded-t-lg object-cover;
+    }
+
+    .book-card-content {
+        @apply p-4 flex flex-col flex-1;
+    }
+
+    .book-card-title {
+        @apply text-lg font-semibold text-gray-900 mb-1 transition-colors;
+        &:hover {
+            @apply text-primary;
+        }
+    }
+
+    .book-card-author {
+        @apply text-sm text-gray-600 mb-2;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors;
+
+        &.nav-link-active {
+            @apply bg-primary/10 text-primary;
+        }
+
+        &.nav-link-inactive {
+            @apply text-gray-600;
+            &:hover {
+                @apply bg-primary/5;
+            }
+        }
+    }
 }
 
-body {
-    position: relative;
-    font-family: "Rubik", sans-serif;
-    color: #0d0d0e;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #f8fafc;
+/* Utility Classes */
+@layer utilities {
+    .flex-center {
+        @apply flex items-center justify-center;
+    }
+
+    .absolute-center {
+        @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+    }
+
+    .text-balance {
+        text-wrap: balance;
+    }
 }
 
-/* Sidebar Styles */
+/* Sidebar Components */
 .sidebar {
-    position: fixed;
-    top: 0;
-    right: -300px;
-    height: 100vh;
-    width: 300px;
-    background-color: #1e293b;
-    padding: 2rem;
-    transition: right 0.3s ease;
-    z-index: 1000;
-    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+    @apply fixed inset-y-0 left-0 z-40 w-64 bg-gray-50 shadow-lg 
+           transition-transform duration-300 transform border-r border-gray-200 
+           overflow-y-auto pt-16 text-gray-900;
+    transform: translateX(-100%);
+}
+
+@screen sm {
+    .sidebar {
+        @apply translate-x-0;
+    }
 }
 
 .sidebar.active {
-    right: 0;
+    @apply translate-x-0;
 }
 
 .sidebar-toggle {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1001;
-    background: none;
-    border: none;
-    color: #1e293b;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sidebar-toggle:hover {
-    background-color: rgba(30, 41, 59, 0.1);
+    @apply fixed top-4 right-4 z-50 p-2 rounded-md text-gray-600 bg-white
+           hover:text-gray-900 hover:bg-gray-100 focus:outline-none 
+           focus:ring-2 focus:ring-offset-2 focus:ring-primary 
+           flex items-center justify-center sm:hidden;
 }
 
 .sidebar-toggle i {
-    font-size: 1.5rem;
+    @apply text-2xl;
 }
 
 .sidebar-links {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 2rem;
+    @apply flex flex-col gap-4 mt-8 px-4;
 }
 
 .sidebar-links a {
-    color: #e2e8f0;
-    text-decoration: none;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.sidebar-links a:hover {
-    background-color: #2d3748;
-    transform: translateX(-5px);
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700
+           transition-all duration-200 hover:bg-gray-50 hover:-translate-x-1;
 }
 
 .sidebar-links a i {
@@ -162,7 +372,6 @@ body {
 .site-wrapper {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     width: 100%;
 }
 
@@ -186,108 +395,63 @@ body {
     animation: fadeIn 0.6s ease-out;
 }
 
-.site-content {
-    flex: 1 0 auto;
-    width: 100%;
-    padding: 2rem 0;
-    animation: fadeIn 0.6s ease-out;
+@layer components {
+    .site-content {
+        @apply flex-1 w-full py-8;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .content-wrapper {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
+        animation: slideUp 0.8s ease-out;
+    }
 }
 
-.content-wrapper {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    width: 100%;
-    animation: slideUp 0.8s ease-out;
-}
-
-/* Blurred background image */
-body::before {
-    content: "";
-    position: fixed;
-    background-image: url('/public/img/pogoy.jpg'); /* your image in public/img */
-
-    /*  background: linear-gradient(to right, #b3e5fc, #81d4fa, #3f96beff, #018ecfff);
-  height: 100vh;
-  margin: 0;
- */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: blur(2px); /* adjust blur level */
-    z-index: -1;        /* behind all content */
-    pointer-events: none; /* so clicks go through */
+/* Background Effects */
+@layer utilities {
+    .bg-blur::before {
+        content: "";
+        @apply fixed inset-0 bg-cover bg-center bg-no-repeat -z-10 pointer-events-none;
+        backdrop-filter: blur(2px);
+    }
 }
 
 
 
-h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0e0e0e;
+@layer base {
+    /* Typography */
+    h1 {
+        @apply text-2xl font-bold text-gray-900 md:text-3xl;
+    }
+
+    h2 {
+        @apply text-xl font-bold text-gray-900 my-4 md:text-2xl;
+    }
+
+    h3 {
+        @apply text-lg font-bold text-gray-900 my-4 md:text-xl;
+    }
+
+    ul {
+        @apply my-10 list-none p-0;
+    }
+
+    p {
+        @apply my-2;
+    }
 }
 
-h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
+/* Navigation Components */
+@layer components {
+    .main-nav {
+        @apply flex items-center gap-8 bg-white px-8 py-5 shadow-sm sticky top-0 z-30;
+    }
 
-h3 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
+    .nav-header {
+        @apply mr-auto text-2xl font-bold text-gray-800 tracking-wide;
+    }
 
-ul {
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
-  list-style: none;
-  padding-left: 0;
-}
-
-p {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-/* ---------------------------------- */
-/* 🧭 Navigation Bar */
-/* ---------------------------------- */
-/* Navigation Styles */
-nav {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    background-color: #ffffff;
-    padding: 1.25rem 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-nav .header {
-    margin-right: auto;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2d3748;
-    letter-spacing: 1px;
-}
-
-nav a {
-    text-decoration: none;
-    color: #4a5568;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
+    /* Navigation styles moved to consolidated .nav-link class above */
 }
 
 nav a:hover {
@@ -305,87 +469,93 @@ header h1 {
   margin-right: auto;
 }
 
-/* ---------------------------------- */
-/* 📝 Forms */
-/* ---------------------------------- */
-form {
-  max-width: 640px;
+/* Form Components */
+@layer components {
+    .form-container {
+        @apply max-w-2xl mx-auto;
+    }
+
+    .form-input {
+        @apply block w-full mt-2 mb-4 px-3 py-2 rounded-lg
+               border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
+               bg-white transition-colors;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .form-group {
+        @apply mb-4;
+    }
 }
 
-input,
-select,
-textarea {
-  display: block;
-  width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  border: 1px solid #93c5fd;
-  border-radius: 0.375rem;
-  background-color: #ffffff;
+/* Layout Utilities */
+@layer utilities {
+    .container-base {
+        @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+/* Component Patterns */
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
-/* ---------------------------------- */
-/* 📦 Utility Classes */
-/* ---------------------------------- */
-.container {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 2rem 3rem;
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-/* Card Styles */
-/* Books Grid Layout */
-.books-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    width: 100%;
-    margin: 2rem 0;
-    animation: fadeIn 0.8s ease-out;
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.search-container {
-    margin-bottom: 2rem;
-    animation: slideInLeft 0.6s ease-out;
+@layer components {
+    /* Grid Layouts */
+    .books-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full my-8;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    /* Search Components */
+    .search-container {
+        @apply mb-8;
+        animation: slideInLeft 0.6s ease-out;
+    }
+
+    .search-input {
+        @apply h-12 w-full px-4 rounded-lg border-2 border-gray-200 
+               focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 
+               text-base transition-colors;
+    }
+
+    .search-button {
+        @apply h-12 px-6 bg-blue-500 text-white font-semibold rounded-lg
+               hover:bg-blue-600 transition-colors cursor-pointer;
+        animation: fadeIn 0.6s ease-out;
+    }
 }
 
-.search-container input {
-    height: 3rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 0.5rem;
-    padding: 0 1rem;
-    font-size: 1rem;
-    width: 100%;
-    transition: border-color 0.2s ease;
-}
-
-.search-container input:focus {
-    border-color: #4299e1;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-}
-
-.search-btn {
-    height: 3rem;
-    padding: 0 1.5rem;
-    background-color: #4299e1;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    animation: fadeIn 0.6s ease-out;
-}
 
 .search-btn:hover {
     background-color: #3182ce;
@@ -521,7 +691,7 @@ textarea:focus {
 
 /* Footer Styles */
 .footer {
-    background-color: #2d3748;
+    background-color: #1e40af;
     color: #fff;
     padding: 4rem 0 2rem;
     margin-top: auto;

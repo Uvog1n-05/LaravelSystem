@@ -29,10 +29,10 @@ class BooksController extends Controller
             ]);
         }
 
-        // Get featured books (newest 5 books)
+        // Get featured books (newest 8 books for carousel, showing 4 at a time)
         $featuredBooks = Books::with('genre')
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(8)
             ->get();
 
         // Get all genres with their books

@@ -1,90 +1,66 @@
-.admin-dashboard {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-.admin-header {
-    margin-bottom: 2rem;
-}
+@layer components {
+    .admin-dashboard {
+        @apply p-8 max-w-[1200px] mx-auto;
+    }
 
-.admin-header h1 {
-    font-size: 2rem;
-    color: #1e293b;
-}
+    .admin-header {
+        @apply mb-8;
+    }
 
-.admin-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
+    .admin-header h1 {
+        @apply text-3xl text-slate-800;
+    }
 
-.stat-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+    .admin-stats {
+        @apply grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6 mb-8;
+    }
 
-.stat-card h3 {
-    color: #64748b;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-}
+    .stat-card {
+        @apply bg-white p-6 rounded-lg shadow-sm;
+    }
 
-.stat-card p {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #1e293b;
-}
+    .stat-card h3 {
+        @apply text-slate-500 text-sm mb-2;
+    }
 
-.admin-actions {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+    .stat-card p {
+        @apply text-2xl font-semibold text-slate-800;
+    }
 
-.admin-actions h2 {
-    font-size: 1.25rem;
-    color: #1e293b;
-    margin-bottom: 1rem;
-}
+    .admin-actions {
+        @apply bg-white p-6 rounded-lg shadow-sm;
+    }
 
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-}
+    .admin-actions h2 {
+        @apply text-xl text-slate-800 mb-4;
+    }
 
-.users-table {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
+    .action-buttons {
+        @apply flex gap-4;
+    }
 
-.users-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
+    .users-table {
+        @apply bg-white rounded-lg shadow-sm overflow-hidden;
+    }
 
-.users-table th,
-.users-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-}
+    .users-table table {
+        @apply w-full border-collapse;
+    }
 
-.users-table th {
-    background: #f8fafc;
-    font-weight: 600;
-    color: #64748b;
-}
+    .users-table th,
+    .users-table td {
+        @apply p-4 text-left border-b border-slate-200;
+    }
 
-.users-table select {
-    padding: 0.5rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.25rem;
-    background: white;
+    .users-table th {
+        @apply bg-slate-50 font-semibold text-slate-500;
+    }
+
+    .users-table select {
+        @apply p-2 border border-slate-200 rounded bg-white;
+    }
 }

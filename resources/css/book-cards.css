@@ -1,55 +1,65 @@
-.card-image-container {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-.card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
+@layer components {
+    /* Book Grid */
+    .books-grid {
+        @apply grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+    }
 
-.card-image:hover {
-    transform: scale(1.05);
-}
+    /* Book Card */
+    .book-card {
+        @apply flex flex-col bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+    }
 
-.card-inner {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+    .book-card-image {
+        @apply relative aspect-[3/4] overflow-hidden rounded-t-lg;
+    }
 
-.card-title {
-    margin-top: auto;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1a202c;
-}
+    .book-card-image img {
+        @apply absolute inset-0 w-full h-full object-cover transition-transform duration-300 hover:scale-105;
+    }
 
-.card-genre {
-    color: #4a5568;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-}
+    .book-card-content {
+        @apply p-4 flex flex-col flex-1;
+    }
 
-.card-details {
-    margin-top: auto;
-    padding-top: 0.5rem;
-    border-top: 1px solid #e2e8f0;
-}
+    .book-card-title {
+        @apply text-lg font-semibold text-gray-900 hover:text-primary transition-colors line-clamp-2;
+    }
 
-.card-author {
-    color: #4a5568;
-    font-size: 0.875rem;
-}
+    .book-card-author {
+        @apply text-sm text-gray-600 mt-1;
+    }
 
-.card-stock {
-    color: #68d391;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
+    .book-card-genre {
+        @apply text-xs text-gray-500 mt-2;
+    }
+
+    .book-card-footer {
+        @apply mt-4 pt-4 border-t border-gray-200 flex items-center justify-between;
+    }
+
+    /* Book Status Badges */
+    .book-status {
+        @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+    }
+
+    .book-status-available {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .book-status-borrowed {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .book-status-unavailable {
+        @apply bg-red-100 text-red-800;
+    }
+
+    /* Book Actions */
+    .book-action {
+        @apply inline-flex items-center text-sm font-medium text-primary hover:text-primary-hover;
+    }
 }

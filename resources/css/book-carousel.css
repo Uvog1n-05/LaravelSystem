@@ -1,40 +1,27 @@
-.featured-section {
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    border-bottom: 1px solid #e5e7eb;
-}
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-}
+@layer components {
+    .featured-section {
+        @apply mb-4 p-3 border-b border-gray-200;
+    }
 
-.section-header h2 {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #4b5563;
-}
+    .section-header {
+        @apply flex justify-between items-center mb-3;
+    }
 
-.carousel-controls {
-    display: flex;
-    gap: 0.5rem;
-}
+    .section-header h2 {
+        @apply text-base font-medium text-gray-600;
+    }
 
-.carousel-button {
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    border: none;
-    color: #9ca3af;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    padding: 0;
-}
+    .carousel-controls {
+        @apply flex gap-2;
+    }
+
+    .carousel-button {
+        @apply w-5 h-5 bg-transparent border-none text-gray-400 flex items-center justify-center cursor-pointer transition-colors duration-200 p-0 hover:text-gray-600;
+    }
 
 .carousel-button:hover {
     color: #4b5563;

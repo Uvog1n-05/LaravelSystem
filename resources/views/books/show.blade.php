@@ -41,6 +41,26 @@
                 </div>
 
                 <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+                    <div class="flex items-center space-x-4">
+                        @auth
+                            @if($books->number_of_books > 0)
+                                <form action="{{ route('books.borrow', ['book' => $books->id]) }}" method="POST" class="inline-flex">
+                                    @csrf
+                                    <button type="submit" 
+                                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-book mr-2"></i>
+                                        Borrow Book
+                                    </button>
+                                </form>
+                            @else
+                                <span class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-200 rounded-md font-medium text-sm text-gray-500">
+                                    <i class="fas fa-exclamation-circle mr-2"></i>
+                                    Not Available
+                                </span>
+                            @endif
+                        @endauth
+                    </div>
+
                     @if(auth()->user() && auth()->user()->isAdmin())
                         <form action="{{ route('books.destroy', $books->id )}}" method="POST" class="inline-flex">
                             @csrf

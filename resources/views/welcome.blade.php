@@ -6,41 +6,57 @@
     <meta name="description" content="TMC Library - Your Digital Library Management System">
     <title>TMC Library - Welcome</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="homepage">
-    <div class="content-wrapper">
-        <div class="welcome-container">
-            <div class="welcome-header">
-                <i class="fas fa-book-reader welcome-icon"></i>
-                <h1>Welcome to TMC Library</h1>
+<body class="min-h-screen bg-gray-50">
+    <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div class="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg">
+            <div class="text-center">
+                <i class="fas fa-book-reader text-5xl text-primary mb-4"></i>
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                    Welcome to TMC Library
+                </h1>
+                <h2 class="mt-4 text-lg text-gray-600">
+                    Your Digital Library Management System
+                </h2>
             </div>
             
-            <div class="welcome-content">
-                <div class="welcome-message">
-                    <h2>Your Digital Library Management System</h2>
-                    <div class="feature-list">
-                        <ul>
-                            <li><i class="fas fa-book"></i> Browse our extensive collection</li>
-                            <li><i class="fas fa-search"></i> Easy search functionality</li>
-                            <li><i class="fas fa-heart"></i> Save your favorite books</li>
-                            <li><i class="fas fa-history"></i> Track your borrowing history</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="welcome-buttons">
-                        <a href="{{ route('show.login') }}" class="btn">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
-                        </a>
-                        <a href="{{ route('show.register') }}" class="btn">
-                            <i class="fas fa-user-plus"></i> Register
-
-                            
-                        </a>
-                    </div>
+            <div class="mt-8">
+                <ul class="space-y-4">
+                    <li class="flex items-center text-gray-700">
+                        <i class="fas fa-book mr-3 text-primary"></i>
+                        <span>Browse our extensive collection</span>
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <i class="fas fa-search mr-3 text-primary"></i>
+                        <span>Easy search functionality</span>
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <i class="fas fa-heart mr-3 text-primary"></i>
+                        <span>Save your favorite books</span>
+                    </li>
+                    <li class="flex items-center text-gray-700">
+                        <i class="fas fa-history mr-3 text-primary"></i>
+                        <span>Track your borrowing history</span>
+                    </li>
+                </ul>
+                
+                <div class="mt-8 flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                    <a href="{{ route('show.login') }}" 
+                       class="flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Sign In
+                    </a>
+                    <a href="{{ route('show.register') }}" 
+                       class="flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-primary ring-1 ring-inset ring-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Register
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+    @vite('resources/js/sidebar.js')
 </body>
 </html>

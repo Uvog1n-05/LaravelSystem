@@ -1,13 +1,17 @@
-/* Admin Users Page */
-.admin-users {
-    animation: fadeIn 0.3s ease-in-out;
-}
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-.admin-users .search-box input {
-    transition: all 0.2s ease;
-}
+@layer components {
+    .admin-users {
+        @apply animate-[fadeIn_0.3s_ease-in-out];
+    }
 
-.admin-users tbody tr {
+    .admin-users .search-box input {
+        @apply transition-all duration-200 ease-in-out;
+    }
+
+    .admin-users tbody tr {
     transition: background-color 0.2s ease;
 }
 

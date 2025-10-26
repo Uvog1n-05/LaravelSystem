@@ -26,73 +26,117 @@
             </div>
         </div>
 
-        <!-- New Arrivals Section -->
+        <!-- Featured Books Carousel -->
             @if($featuredBooks->count() > 0)
-                <div class="mb-8">
+                <div class="mb-8 relative" x-data="carousel">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h2 class="text-lg font-bold text-gray-900">New Arrivals</h2>
-                            <p class="text-gray-600 text-xs mt-0.5">Check out our latest additions</p>
+                            <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-2 text-lg"></i>
+                                New Arrivals
+                            </h2>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <button class="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" id="prev-button">
-                                <i class="fas fa-chevron-left text-gray-600 text-xs"></i>
+                            <button @click="swiper.slidePrev()" class="swiper-button-prev p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-chevron-left text-gray-600 text-sm"></i>
                             </button>
-                            <button class="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" id="next-button">
-                                <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                            <button @click="swiper.slideNext()" class="swiper-button-next p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-chevron-right text-gray-600 text-sm"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="relative" id="featured-carousel">
-                        <div class="swiper-container overflow-hidden max-w-4xl mx-auto">
+                    <div class="relative overflow-hidden">
+                        <div class="swiper-container">
                             <div class="swiper-wrapper">
-                                @foreach ($featuredBooks as $book)
-                                    <div class="swiper-slide px-1">
-                                        <div class="bg-white rounded-md shadow-sm overflow-hidden group hover:shadow transition-shadow duration-300 h-full max-w-[160px] mx-auto">
-                                            <div class="relative pt-[150%]">
-                                                <img src="{{ $book->cover_image_url }}" 
-                                                     alt="{{ $book->title }}" 
-                                                     class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
-                                                <div class="absolute top-1 right-1">
-                                                    @if(auth()->user()->favorites->contains($book))
-                                                        <form action="{{ route('user.favorite.remove', $book->id) }}" method="POST" class="inline-block">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="p-1 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:bg-red-50">
-                                                                <i class="fas fa-heart text-red-500 text-xs"></i>
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <form action="{{ route('user.favorite.add', $book) }}" method="POST" class="inline-block">
-                                                            @csrf
-                                                            <button type="submit" class="p-1 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:bg-red-50">
-                                                                <i class="fas fa-heart text-gray-400 hover:text-red-500 text-xs"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="p-1.5">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <span class="text-[9px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full truncate max-w-[70%]">
+                                @foreach ($featuredBooks->chunk(4) as $bookPair)
+                                <div class="swiper-slide">
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        @foreach ($bookPair as $book)
+                                        <div class="bg-white rounded-lg hover:shadow-md transition-all duration-300 overflow-hidden group max-w-[160px]">
+                                            <div class="aspect-[2/3] relative overflow-hidden">
+                                                <img 
+                                                    src="{{ $book->cover_image_url }}" 
+                                                    alt="{{ $book->title }}" 
+                                                    class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                                    onerror="this.src='{{ asset('img/default-book-cover.jpg') }}'"
+                                                >
+                                                <div class="absolute top-0 right-0 m-1">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-500/80 text-white backdrop-blur-sm">
                                                         {{ $book->genre->genre_name }}
                                                     </span>
                                                 </div>
-                                                <a href="{{ route('books.show', $book) }}" class="block group">
-                                                    <h3 class="text-xs font-medium text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1 mb-0.5">
-                                                        {{ $book->title }}
-                                                    </h3>
-                                                    <p class="text-[9px] text-gray-600 truncate">By {{ $book->author }}</p>
-                                                </a>
+                                            </div>
+                                            <div class="p-2">
+                                                <h3 class="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                                                    {{ $book->title }}
+                                                </h3>
+                                                <p class="text-xs text-gray-500 line-clamp-1">
+                                                    {{ $book->author }}
+                                                </p>
+                                                <div class="mt-2 flex items-center justify-between border-t pt-2">
+                                                    <span class="text-[9px] text-gray-500">
+                                                        <i class="fas fa-book-open mr-0.5"></i> {{ $book->number_of_books }}
+                                                    </span>
+                                                    @auth
+                                                        @if($book->number_of_books > 0)
+                                                            <form action="{{ route('books.borrow', $book) }}" method="POST" class="inline-flex">
+                                                                @csrf
+                                                                <button type="submit" 
+                                                                    class="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full hover:bg-blue-200 transition-colors">
+                                                                    Borrow
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    @endauth
+                                                </div>
+                                            </div>
                                         </div>
+                                        @endforeach
                                     </div>
+                                </div>
                                 @endforeach
                             </div>
+                            <!-- Add pagination -->
+                            <div class="swiper-pagination mt-6"></div>
                         </div>
-                        <div class="swiper-pagination !-bottom-6"></div>
                     </div>
                 </div>
+
+                <!-- Alpine.js + Swiper.js Integration -->
+                <script>
+                    document.addEventListener('alpine:init', () => {
+                        Alpine.data('carousel', () => ({
+                            swiper: null,
+                            init() {
+                                this.swiper = new Swiper('.swiper-container', {
+                                    slidesPerView: 1,
+                                    spaceBetween: 12,
+                                    loop: true,
+                                    navigation: {
+                                        nextEl: '.swiper-button-next',
+                                        prevEl: '.swiper-button-prev',
+                                    },
+                                    autoplay: {
+                                        delay: 5000,
+                                        disableOnInteraction: false,
+                                        pauseOnMouseEnter: true
+                                    },
+                                    pagination: {
+                                        el: '.swiper-pagination',
+                                        clickable: true
+                                    },
+                                    breakpoints: {
+                                        640: {
+                                            slidesPerView: 1,
+                                            spaceBetween: 16
+                                        }
+                                    }
+                                });
+                            }
+                        }));
+                    });
+                </script>
             @endif
 
             <!-- Books Grid -->
@@ -135,10 +179,23 @@
                                 <span class="text-[10px] text-gray-500">
                                     <i class="fas fa-book-open mr-1"></i> {{ $book->number_of_books }}
                                 </span>
-                                <a href="{{ route('books.show', $book) }}" 
-                                   class="text-xs font-medium text-blue-600 hover:text-blue-700">
-                                    View Details →
-                                </a>
+                                <div class="flex items-center space-x-2">
+                                    @auth
+                                        @if($book->number_of_books > 0)
+                                            <form action="{{ route('books.borrow', ['book' => $book->id]) }}" method="POST" class="inline-flex">
+                                                @csrf
+                                                <button type="submit" 
+                                                    class="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full hover:bg-blue-200 transition-colors">
+                                                    Borrow
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endauth
+                                    <a href="{{ route('books.show', $book) }}" 
+                                       class="text-[10px] font-medium text-gray-600 hover:text-blue-600">
+                                        Details →
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -151,83 +208,42 @@
                     {{ $books->links() }}
                 </div>
             @endif
-        </div>
-    </div>
-
-            <!-- Initialize Swiper -->
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const featuredCarousel = document.getElementById('featured-carousel');
-                    if (featuredCarousel) {
-                        const swiper = new Swiper(featuredCarousel.querySelector('.swiper-container'), {
-                            slidesPerView: 3,
-                            spaceBetween: 8,
-                            loop: true,
-                            direction: 'horizontal',
-                            slidesPerGroup: 3,
-                            autoplay: {
-                                delay: 5000,
-                                disableOnInteraction: false,
-                            },
-                            breakpoints: {
-                                640: {
-                                    slidesPerView: 4,
-                                    spaceBetween: 12,
-                                },
-                                1024: {
-                                    slidesPerView: 6,
-                                    spaceBetween: 16,
-                                },
-                            },
-                            navigation: {
-                                nextEl: '#next-button',
-                                prevEl: '#prev-button',
-                            },
-                            speed: 400,
-                        });
-
-                        // Custom navigation buttons
-                        document.getElementById('prev-button').addEventListener('click', () => {
-                            swiper.slidePrev();
-                        });
-                        document.getElementById('next-button').addEventListener('click', () => {
-                            swiper.slideNext();
-                        });
-
-                        featuredCarousel.addEventListener('mouseenter', () => {
-                            swiper.autoplay.stop();
-                        });
-                        featuredCarousel.addEventListener('mouseleave', () => {
-                            swiper.autoplay.start();
-                        });
-                    }
-                });
-            </script>
-
             <!-- Footer -->
-            <footer class="footer">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h3>About AllReads</h3>
-                        <p>Your digital library for discovering and managing books.</p>
-            </div>
+           <footer class="mt-16 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 border-t border-gray-700 text-gray-300 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="{{ route('books.index') }}">Home</a></li>
-                    <li><a href="{{ route('books.create') }}">Add Book</a></li>
+                <h3 class="text-lg font-semibold text-white mb-4">About AllReads</h3>
+                <p class="text-gray-400">Your digital library for discovering and managing books.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ route('books.index') }}" class="text-gray-400 hover:text-blue-400 transition-colors">Home</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('books.create') }}" class="text-gray-400 hover:text-blue-400 transition-colors">Add Book</a>
+                    </li>
                 </ul>
             </div>
+
             <div class="footer-section">
-                <h3>Contact</h3>
-                <p>Email: info@allreads.com</p>
-                <p>Phone: (123) 456-7890</p>
+                <h3 class="text-lg font-semibold text-white mb-4">Contact</h3>
+                <div class="space-y-2 text-gray-400">
+                    <p><i class="fas fa-envelope mr-2 text-blue-400"></i>info@allreads.com</p>
+                    <p><i class="fas fa-phone mr-2 text-blue-400"></i>(123) 456-7890</p>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; {{ date('Y') }} AllReads. All rights reserved.</p>
+
+        <div class="mt-10 pt-8 border-t border-gray-700 text-center text-gray-500">
+            <p>&copy; {{ date('Y') }} <span class="text-blue-400 font-semibold">AllReads</span>. All rights reserved.</p>
         </div>
+    </div>
+</footer>
 
-    </footer>
-
+        </div>
+    </div>
 </x-layout>

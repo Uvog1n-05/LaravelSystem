@@ -22,10 +22,7 @@
                             <i class="fas fa-plus-circle mr-2"></i>
                             Add New Book
                         </a>
-                        <a href="{{ route('admin.genres') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <i class="fas fa-tags mr-2"></i>
-                            Manage Genres
-                        </a>
+                      
                     </div>
                 </div>
             </div>
@@ -128,20 +125,7 @@
                         </div>
                     </a>
                     
-                    <a href="{{ route('admin.genres') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-tags text-green-600"></i>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-900">Manage Genres</p>
-                            <p class="text-sm text-gray-500">Organize and categorize books</p>
-                        </div>
-                        <div class="ml-auto">
-                            <i class="fas fa-chevron-right text-gray-400"></i>
-                        </div>
-                    </a>
+                   
                     
                     <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
                         <div class="flex-shrink-0">

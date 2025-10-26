@@ -49,6 +49,25 @@ class User extends Authenticatable
         return $this->role === $role;
     }
 
+    // Relationship with borrowed books
+    public function borrowedBooks()
+    {
+        return $this->belongsToMany(Books::class, 'book_user_borrowed', 'user_id', 'book_id')
+                    ->withPivot('borrowed_date', 'due_date', 'returned_date')
+                    ->withPivotValue('extensions_count', 0)
+                    ->wherePivotNull('returned_date')
+                    ->orderBy('pivot_due_date', 'asc')
+                    ->using(BookBorrowing::class);
+    }
+
+    // Get all books (including returned)
+    public function allBorrowedBooks()
+    {
+        return $this->belongsToMany(Books::class, 'book_user_borrowed', 'user_id', 'book_id')
+                    ->withPivot('borrowed_date', 'due_date', 'returned_date')
+                    ->orderBy('pivot_borrowed_date', 'desc');
+    }
+
     // Relationship with Books
     public function books()
     {
