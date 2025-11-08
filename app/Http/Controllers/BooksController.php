@@ -8,32 +8,50 @@ use App\Models\Genre;
 class BooksController extends Controller
 {
     public function index(Request $request) {
-        if ($request->search) {
+        $query = Books::with('genre');
+
+        // Apply search filter
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $books = Books::with('genre')
-                ->where(function($q) use ($searchTerm) {
-                    $q->where('title', 'LIKE', "%{$searchTerm}%")
-                      ->orWhere('author', 'LIKE', "%{$searchTerm}%")
-                      ->orWhereHas('genre', function($q) use ($searchTerm) {
-                          $q->where('genre_name', 'LIKE', "%{$searchTerm}%");
-                      });
-                })
-                ->orderBy('created_at', 'desc')
-                ->paginate(12);
-            
-            $books->appends(['search' => $request->search]);
-            return view('books.index', [
-                'books' => $books,
-                'featuredBooks' => collect(), // Empty for search results
-                'genres' => Genre::withCount('books')->get()
-            ]);
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('author', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereHas('genre', function($q) use ($searchTerm) {
+                      $q->where('genre_name', 'LIKE', "%{$searchTerm}%");
+                  });
+            });
         }
 
-        // Get featured books (newest 8 books for carousel, showing 4 at a time)
-        $featuredBooks = Books::with('genre')
-            ->orderBy('created_at', 'desc')
-            ->take(8)
-            ->get();
+        // Apply genre filter
+        if ($request->filled('genre')) {
+            $query->where('genre_id', $request->genre);
+        }
+
+        // Apply availability filter
+        if ($request->filled('availability')) {
+            if ($request->availability === 'available') {
+                $query->where('number_of_books', '>', 0);
+            } elseif ($request->availability === 'unavailable') {
+                $query->where('number_of_books', '=', 0);
+            }
+        }
+
+        // Apply sort order
+        $sortField = $request->get('sort', 'created_at');
+        $sortDirection = $request->get('direction', 'desc');
+        $allowedSortFields = ['title', 'author', 'created_at'];
+        
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        // Get books with pagination
+        $books = $query->paginate(12)->withQueryString();
+        
+        // Get featured books only if not searching or filtering
+        $featuredBooks = !$request->hasAny(['search', 'genre', 'availability']) 
+            ? Books::with('genre')->orderBy('created_at', 'desc')->take(16)->get()
+            : collect();
 
         // Get all genres with their books
         $genres = Genre::with(['books' => function($query) {
@@ -41,7 +59,7 @@ class BooksController extends Controller
         }])->get();
 
         return view('books.index', [
-            'books' => Books::with('genre')->orderBy('created_at', 'desc')->paginate(12),
+            'books' => $books,
             'featuredBooks' => $featuredBooks,
             'genres' => $genres
         ]);

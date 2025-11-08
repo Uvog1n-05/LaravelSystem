@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 class BookBorrowingController extends Controller
 {
     private const MAX_BOOKS_PER_USER = 5;
-    private const MAX_EXTENSIONS = 2;
+    public const MAX_EXTENSIONS = 2;
     private const BORROW_PERIOD_DAYS = 14;
     private const EXTENSION_DAYS = 7;
 
@@ -46,14 +46,19 @@ class BookBorrowingController extends Controller
         }
 
         try {
-            // Create new borrow record
-            BookBorrowing::create([
-                'user_id' => auth()->id(),
-                'book_id' => $book->id,
-                'borrowed_date' => now(),
-                'due_date' => now()->addDays(self::BORROW_PERIOD_DAYS),
-            'extensions_count' => 0
-            ]);
+            DB::transaction(function () use ($book) {
+                // Decrease the number of available books
+                $book->decrement('number_of_books');
+
+                // Create new borrow record
+                BookBorrowing::create([
+                    'user_id' => auth()->id(),
+                    'book_id' => $book->id,
+                    'borrowed_date' => now(),
+                    'due_date' => now()->addDays(self::BORROW_PERIOD_DAYS),
+                    'extensions_count' => 0
+                ]);
+            });
 
             return back()->with('success', 'Book borrowed successfully. Please return it by ' . 
                 now()->addDays(self::BORROW_PERIOD_DAYS)->format('M d, Y'));
@@ -76,10 +81,14 @@ class BookBorrowingController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($borrow) {
+            DB::transaction(function () use ($borrow, $book) {
+                // Update the borrow record
                 $borrow->update([
                     'returned_date' => now()
                 ]);
+
+                // Increase the number of available books
+                $book->increment('number_of_books');
             });
 
             return back()->with('success', 'Book returned successfully.');
@@ -139,5 +148,22 @@ class BookBorrowingController extends Controller
             'total' => $borrowings->total(),
             'currentPage' => $borrowings->currentPage()
         ]);
+    }
+
+    /**
+     * List all borrowings for admin view
+     */
+    public function allBorrowings(): View
+    {
+        // Ensure user is admin
+        if (!auth()->user()->isAdmin()) {
+            return redirect()->route('home')->with('error', 'Unauthorized access.');
+        }
+
+        $borrowings = BookBorrowing::with(['book', 'user'])
+            ->orderBy('borrowed_date', 'desc')
+            ->paginate(15);
+
+        return view('admin.borrowings', compact('borrowings'));
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Model;
 
-class BookBorrowing extends Model
+class BookBorrowing extends Pivot
 {
     protected $table = 'book_user_borrowed';
 

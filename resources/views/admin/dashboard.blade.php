@@ -124,53 +124,44 @@
                             <i class="fas fa-chevron-right text-gray-400"></i>
                         </div>
                     </a>
-                    
-                   
-                    
-                    <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
+
+                    <a href="{{ route('admin.borrowings') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
                         <div class="flex-shrink-0">
-                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-cog text-gray-600"></i>
+                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-history text-indigo-600"></i>
                             </div>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-900">Settings</p>
-                            <p class="text-sm text-gray-500">Configure system preferences</p>
+                            <p class="text-sm font-medium text-gray-900">Book Borrowings</p>
+                            <p class="text-sm text-gray-500">View all borrowed books and their status</p>
                         </div>
                         <div class="ml-auto">
                             <i class="fas fa-chevron-right text-gray-400"></i>
                         </div>
                     </a>
+
+                    <a href="{{ route('admin.borrow-requests') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-indigo-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-900">Book Requests</p>
+                            <p class="text-sm text-gray-500">View all requested books </p>
+                        </div>
+                        <div class="ml-auto">
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </a>
+                    
+                   
+           
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
-                    <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
-                </div>
-                <div class="divide-y divide-gray-100 overflow-hidden">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="table-header">User</th>
-                                <th class="table-header">Action</th>
-                                <th class="table-header">Time</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <!-- Add your activity logs here -->
-                            <tr>
-                                <td class="table-cell">System</td>
-                                <td class="table-cell">Dashboard updated</td>
-                                <td class="table-cell">Just now</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+
+   
     </div>
 </x-layout>

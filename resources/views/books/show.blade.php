@@ -43,13 +43,25 @@
                 <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
                     <div class="flex items-center space-x-4">
                         @auth
-                            @if($books->number_of_books > 0)
-                                <form action="{{ route('books.borrow', ['book' => $books->id]) }}" method="POST" class="inline-flex">
+                            @php
+                                $pendingRequest = \App\Models\BorrowRequest::where('user_id', auth()->id())
+                                    ->where('book_id', $books->id)
+                                    ->where('status', 'pending')
+                                    ->exists();
+                            @endphp
+                            
+                            @if($pendingRequest)
+                                <span class="inline-flex items-center px-4 py-2 bg-yellow-100 border border-yellow-200 rounded-md font-medium text-sm text-yellow-800">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Request Pending
+                                </span>
+                            @elseif($books->number_of_books > 0)
+                                <form action="{{ route('borrow-requests.store', ['book' => $books->id]) }}" method="POST" class="inline-flex">
                                     @csrf
                                     <button type="submit" 
                                         class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        <i class="fas fa-book mr-2"></i>
-                                        Borrow Book
+                                        <i class="fas fa-book-reader mr-2"></i>
+                                        Request to Borrow
                                     </button>
                                 </form>
                             @else

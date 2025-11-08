@@ -27,6 +27,13 @@
                         required
                         placeholder="Enter your password"
                     >
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="text-sm">
+                            <a href="{{ route('password.request') }}" class="text-blue-600 hover:text-blue-500">
+                                Forgot your password?
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <button class="btn" type="submit">Sign In</button>

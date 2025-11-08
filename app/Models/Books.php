@@ -43,6 +43,13 @@ class Books extends Model
         return $this->hasMany(BookBorrowing::class, 'book_id');
     }
 
+    public function borrowers()
+    {
+        return $this->belongsToMany(User::class, 'book_user_borrowed', 'book_id', 'user_id')
+                    ->withPivot('borrowed_date', 'due_date', 'returned_date', 'extensions_count')
+                    ->using(BookBorrowing::class);
+    }
+
     public function getAvailableCopiesAttribute()
     {
         $borrowedCount = $this->borrows()->whereNull('returned_date')->count();

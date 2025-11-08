@@ -133,8 +133,26 @@
                            class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('user.profile') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
                             <i class="fas fa-user w-5 h-5 mr-3"></i> Profile
                         </a>
-                        
-                      
+
+                        <a href="{{ route('books.history') }}" 
+                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.history') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                            <i class="fas fa-history w-5 h-5 mr-3"></i> Borrowing History
+                        </a>
+
+                        <a href="{{ route('borrow-requests.user') }}" 
+                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('borrow-requests.user') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                            <i class="fas fa-clock w-5 h-5 mr-3"></i>  My Borrow Requests
+                            @php
+                                $pendingCount = \App\Models\BorrowRequest::where('user_id', auth()->id())
+                                    ->where('status', 'pending')
+                                    ->count();
+                            @endphp
+                            @if($pendingCount > 0)
+                                <span class="ml-auto inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-500 rounded-full">
+                                    {{ $pendingCount }}
+                                </span>
+                            @endif
+                        </a>
 
                         @if(auth()->user()->isAdmin())
                             <div class="border-t border-gray-200 my-4"></div>
@@ -143,16 +161,45 @@
                                class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
                                 <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i> Admin Dashboard
                             </a>
-                            
-                            <a href="{{ route('admin.users') }}" 
-                               class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.users') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                                <i class="fas fa-users w-5 h-5 mr-3"></i> Manage Users
-                            </a>
-                            
-                            <a href="{{route('books.create')}}" 
-                               class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.create') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                                <i class="fas fa-plus-circle w-5 h-5 mr-3"></i> Add Book
-                            </a>
+
+                            <div x-data="{ open: false }" class="relative">
+                                <button @click="open = !open" 
+                                    class="flex items-center w-full p-2 text-gray-700 rounded-lg transition-colors hover:bg-blue-50">
+                                    <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                                    <span class="flex-1 text-left">Admin Controls</span>
+                                    <i class="fas fa-chevron-down transition-transform" :class="{ 'transform rotate-180': open }"></i>
+                                </button>
+
+                                <div x-show="open" 
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="transform opacity-0 scale-95"
+                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="transform opacity-100 scale-100"
+                                    x-transition:leave-end="transform opacity-0 scale-95"
+                                    class="pl-6 mt-1 space-y-1">
+                                    
+                                    <a href="{{ route('admin.users') }}" 
+                                       class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.users') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                        <i class="fas fa-users w-5 h-5 mr-3"></i> Manage Users
+                                    </a>
+
+                                    <a href="{{ route('admin.borrow-requests') }}" 
+                                       class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.borrow-requests') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                        <i class="fas fa-clock w-5 h-5 mr-3"></i> Borrow Requests
+                                    </a>
+
+                                    <a href="{{ route('admin.borrowings') }}" 
+                                       class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.borrowings') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                        <i class="fas fa-history w-5 h-5 mr-3"></i> Book Borrowings
+                                    </a>
+                                    
+                                    <a href="{{route('books.create')}}" 
+                                       class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.create') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                        <i class="fas fa-plus-circle w-5 h-5 mr-3"></i> Add Book
+                                    </a>
+                                </div>
+                            </div>
                         @endif
                     @else
                         <a href="{{route('show.login')}}" 
