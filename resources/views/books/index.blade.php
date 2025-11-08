@@ -52,7 +52,7 @@
                              x-transition:leave="transition ease-in duration-150"
                              x-transition:leave-start="opacity-100 transform translate-y-0"
                              x-transition:leave-end="opacity-0 transform -translate-y-2"
-                             class="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+                             class="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20 bg-gradient-to-br from-white/95 to-blue-50/95">
                             
                             <!-- Filter Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
