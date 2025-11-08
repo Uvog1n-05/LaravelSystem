@@ -34,7 +34,7 @@ class ProfileController extends Controller
         ]);
 
         auth()->user()->update([
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'], // Model will hash this automatically
         ]);
 
         return back()->with('success', 'Password updated successfully.');

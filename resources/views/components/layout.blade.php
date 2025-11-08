@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
     <div class="pae-container" x-data="{ isSidebarOpen: false }">
         <!-- Mobile Sidebar Overlay -->
         <div x-show="isSidebarOpen" 
