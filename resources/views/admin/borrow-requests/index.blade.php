@@ -1,8 +1,19 @@
+{{--
+    Admin Borrow Requests Management Page
+    This view allows administrators to:
+    - View all pending borrow requests
+    - See request details (user, book, timestamp)
+    - Approve or decline requests
+    - Check book availability before approval
+    - Monitor request status
+--}}
+
 <x-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    {{-- Page Header --}}
                     <h2 class="text-2xl font-bold mb-6">Borrow Requests</h2>
 
                     @if($requests->isEmpty())

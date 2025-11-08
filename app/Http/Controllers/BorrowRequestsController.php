@@ -4,13 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\BorrowRequest;
 use App\Models\Books;
+use App\Models\BookBorrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
+/**
+ * Controller for managing book borrowing requests.
+ * Handles the request workflow from submission to approval/rejection.
+ */
 class BorrowRequestsController extends Controller
 {
+    /**
+     * Display a list of all borrow requests (admin view).
+     * Shows pending requests that need admin approval.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index(): View
     {
         // For admin view
@@ -79,46 +90,64 @@ class BorrowRequestsController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($request, $action) {
-                $status = $action === 'approve' ? 'approved' : 'declined';
-                
+            DB::beginTransaction();
+
+            if ($action === 'approve') {
+                // Check if book is still available
+                if (!$request->book->isAvailable()) {
+                    throw new \Exception('This book is no longer available for borrowing.');
+                }
+
+                // Count active borrowed books for the user
+                $activeBorrowings = BookBorrowing::where('user_id', $request->user_id)
+                    ->whereNull('returned_date')
+                    ->count();
+
+                // Skip limit check for admin users
+                if (!$request->user->isAdmin() && $activeBorrowings >= self::MAX_TOTAL_BOOKS) {
+                    throw new \Exception('User has reached the maximum number of borrowed books.');
+                }
+
+                // Update the request status first
                 $request->update([
-                    'status' => $status,
+                    'status' => 'approved',
                     'processed_at' => now()
                 ]);
 
-                if ($status === 'approved') {
-                    // Count active borrowed books for the user
-                    $activeBorrowings = \App\Models\BookBorrowing::where('user_id', $request->user_id)
-                        ->whereNull('returned_date')
-                        ->count();
+                // Create borrowing record
+                BookBorrowing::create([
+                    'user_id' => $request->user_id,
+                    'book_id' => $request->book_id,
+                    'borrowed_date' => now(),
+                    'due_date' => now()->addDays(14),
+                    'extensions_count' => 0
+                ]);
 
-                    // Verify the user hasn't exceeded the limit
-                    if ($activeBorrowings >= self::MAX_TOTAL_BOOKS) {
-                        throw new \Exception('User has reached the maximum number of borrowed books.');
-                    }
+                // Decrease book count
+                $request->book->decrement('number_of_books');
 
-                    // Create the actual borrowing record
-                    $book = $request->book;
-                    $book->decrement('number_of_books');
-                    
-                    \App\Models\BookBorrowing::create([
-                        'user_id' => $request->user_id,
-                        'book_id' => $request->book_id,
-                        'borrowed_date' => now(),
-                        'due_date' => now()->addDays(14),
-                        'extensions_count' => 0
-                    ]);
-                }
-            });
+                $message = 'Borrow request approved successfully.';
+            } else {
+                // For declining requests
+                $request->update([
+                    'status' => 'declined',
+                    'processed_at' => now()
+                ]);
+                
+                $message = 'Borrow request declined successfully.';
+            }
 
-            $message = $action === 'approve' 
-                ? 'Borrow request approved successfully.' 
-                : 'Borrow request declined.';
-
-            return back()->with('success', $message);
+            DB::commit();
+            return redirect()->route('admin.borrow-requests')->with('success', $message);
+            
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred while processing the request.');
+            DB::rollBack();
+            \Log::error('Error processing borrow request: ' . $e->getMessage(), [
+                'request_id' => $request->id,
+                'action' => $action,
+                'error' => $e->getMessage()
+            ]);
+            return back()->with('error', $e->getMessage());
         }
     }
 

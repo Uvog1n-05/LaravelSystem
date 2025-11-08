@@ -17,24 +17,22 @@ class GenreFactory extends Factory
     public function definition()
     {
         return [
-          'genre_name' => fake()->randomElement([
-        'Fantasy',
-        'Science Fiction',
-        'Mystery',
-        'Thriller',
-        'Romance',
-        'Horror',
-        'Historical Fiction',
-        'Non-fiction',
-        'Adventure',
-        'Drama',
-        'Romance',
-        'Comedy',
-        'Action',
-        'Sci-fi',
-    ]),
-    
-        'description' =>fake()->realText(10),
+            'name' => fake()->randomElement([
+                'Fantasy',
+                'Science Fiction',
+                'Mystery',
+                'Thriller',
+                'Romance',
+                'Horror',
+                'Historical Fiction',
+                'Non-fiction',
+                'Adventure',
+                'Drama',
+                'Comedy',
+                'Action',
+                'Sci-fi',
+            ]),
+            'description' => fake()->realText(50),
         ];
     }
 }

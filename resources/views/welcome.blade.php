@@ -8,15 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-gray-50">
-    <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div class="w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg">
+<body class="min-h-screen relative">
+    {{-- Background Image with Overlay --}}
+    <div class="fixed inset-0 z-0">
+        <img src="{{ asset('img/tmc.jpg') }}" 
+             alt="Library Background" 
+             class="w-full h-full object-cover"
+        >
+        <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+
+    {{-- Content --}}
+    <div class="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div class="w-full max-w-md space-y-8 rounded-lg bg-white/90 backdrop-blur-sm p-8 shadow-lg border border-white/20">
             <div class="text-center">
-                <i class="fas fa-book-reader text-5xl text-primary mb-4"></i>
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                <i class="fas fa-book-reader text-6xl text-primary mb-6"></i>
+                <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                     Welcome to TMC Library
                 </h1>
-                <h2 class="mt-4 text-lg text-gray-600">
+                <h2 class="mt-4 text-xl text-gray-700">
                     Your Digital Library Management System
                 </h2>
             </div>

@@ -2,20 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class BookBorrowing extends Pivot
+/**
+ * The BookBorrowing model handles the book lending records.
+ * It tracks when books are borrowed, their due dates, and return status.
+ */
+class BookBorrowing extends Model
 {
-    protected $table = 'book_user_borrowed';
+    /**
+     * The table associated with the model.
+     * 
+     * @var string
+     */
+    protected $table = 'book_borrowings';
 
+    /**
+     * The attributes that are mass assignable.
+     * 
+     * @var array
+     */
     protected $fillable = [
-        'user_id',
-        'book_id',
-        'borrowed_date',
-        'due_date',
-        'returned_date',
-        'extensions_count'
+        'user_id',           // The user who borrowed the book
+        'book_id',           // The book that was borrowed
+        'borrowed_date',     // When the book was borrowed
+        'due_date',         // When the book should be returned
+        'returned_date',    // When the book was actually returned (null if not returned)
+        'extensions_count'  // Number of times the borrowing period was extended
     ];
 
     protected $casts = [
@@ -24,12 +38,12 @@ class BookBorrowing extends Pivot
         'returned_date' => 'datetime'
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function book()
+    public function book(): BelongsTo
     {
         return $this->belongsTo(Books::class);
     }

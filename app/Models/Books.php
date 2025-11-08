@@ -6,19 +6,51 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Genre;
 
+/**
+ * The Books model represents a book in the library system.
+ * Each book can have multiple copies available for borrowing.
+ */
 class Books extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['title', 'author', 'about', 'number_of_books', 'genre_id', 'user_id', 'cover_image'];
+    /**
+     * The attributes that are mass assignable.
+     * 
+     * @var array
+     */
+    protected $fillable = [
+        'title',        // The title of the book
+        'author',       // The author of the book
+        'about',        // Description or summary of the book
+        'number_of_books', // Number of copies available
+        'genre_id',     // Foreign key to the genres table
+        'user_id',      // Foreign key to users table (admin who added the book)
+        'cover_image'   // Filename of the book's cover image
+    ];
 
+    /**
+     * Append the cover_image_url to the model's array form.
+     * 
+     * @var array
+     */
     protected $appends = ['cover_image_url'];
 
+    /**
+     * Get the genre that this book belongs to.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function genre()
     {
         return $this->belongsTo(Genre::class);
     }
 
+    /**
+     * Get the user (admin) who added this book.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -45,14 +77,24 @@ class Books extends Model
 
     public function borrowers()
     {
-        return $this->belongsToMany(User::class, 'book_user_borrowed', 'book_id', 'user_id')
-                    ->withPivot('borrowed_date', 'due_date', 'returned_date', 'extensions_count')
-                    ->using(BookBorrowing::class);
+        return $this->hasManyThrough(
+            User::class,
+            BookBorrowing::class,
+            'book_id',
+            'id',
+            'id',
+            'user_id'
+        );
+    }
+
+    public function activeBorrowings()
+    {
+        return $this->borrows()->whereNull('returned_date');
     }
 
     public function getAvailableCopiesAttribute()
     {
-        $borrowedCount = $this->borrows()->whereNull('returned_date')->count();
+        $borrowedCount = $this->activeBorrowings()->count();
         return $this->number_of_books - $borrowedCount;
     }
 

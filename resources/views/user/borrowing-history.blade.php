@@ -1,7 +1,18 @@
+{{--
+    User's Borrowing History Page
+    This view shows users their borrowing activity and allows them to:
+    - View currently borrowed books
+    - See borrowing history and statistics
+    - Track due dates and overdue items
+    - Request extensions for borrowed books
+    - Return books
+    - Monitor borrowing limits and availability
+--}}
+
 <x-layout>
     <div class="bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <!-- Header Section -->
+            {{-- Header Section with Statistics --}}
             <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                 <div class="sm:flex sm:items-center sm:justify-between">
                     <div>
@@ -135,9 +146,13 @@
                                             <span class="hidden sm:inline mx-2">•</span>
                                             <div class="flex items-center">
                                                 <i class="fas fa-clock mr-1"></i>
-                                                <span>Due: {{ $borrowing->due_date->format('M d, Y') }}</span>
-                                                @if(!$borrowing->returned_date && !$borrowing->isOverdue())
-                                                    <span class="ml-1 text-xs">({{ now()->diffInDays($borrowing->due_date) }} days left)</span>
+                                                @if($borrowing->due_date)
+                                                    <span>Due: {{ $borrowing->due_date->format('M d, Y') }}</span>
+                                                    @if(!$borrowing->returned_date && !$borrowing->isOverdue())
+                                                        <span class="ml-1 text-xs">({{ now()->diffInDays($borrowing->due_date) }} days left)</span>
+                                                    @endif
+                                                @else
+                                                    <span>Due date not set</span>
                                                 @endif
                                             </div>
                                             @if($borrowing->returned_date)

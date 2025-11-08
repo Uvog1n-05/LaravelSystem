@@ -1,6 +1,17 @@
+{{-- 
+    Main Books Listing Page
+    This view displays all books with search, filter, and sorting capabilities.
+    Features:
+    - Search bar for finding books by title, author, or genre
+    - Genre filter dropdown
+    - Availability filter (all/available/borrowed)
+    - Sort options (newest/title/author)
+    - Book cards with cover images and quick actions
+--}}
+
 <x-layout>
     <div class="container-fluid py-8">
-        <!-- Hero Section -->
+        <!-- Hero Section with Search -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg mb-12 text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <h1 class="text-4xl font-bold mb-6">Find your next Book</h1>
@@ -55,7 +66,7 @@
                                         <option value="">All Genres</option>
                                         @foreach($genres as $genre)
                                             <option value="{{ $genre->id }}" {{ request('genre') == $genre->id ? 'selected' : '' }}>
-                                                {{ $genre->genre_name }} ({{ $genre->books_count }})
+                                                {{ $genre->name }} ({{ $genre->books_count }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -96,7 +107,7 @@
                                         @if(request('genre'))
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-50 text-indigo-700 border border-indigo-100">
                                                 <i class="fas fa-books text-indigo-500 mr-1.5"></i>
-                                                {{ $genres->find(request('genre'))->genre_name }}
+                                                {{ $genres->find(request('genre'))->name }}
                                                 <a href="{{ request()->fullUrlWithQuery(['genre' => null]) }}" 
                                                    class="ml-1.5 text-indigo-400 hover:text-indigo-600 transition-colors">
                                                     <i class="fas fa-times"></i>
@@ -179,7 +190,7 @@
                                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                                 <div class="absolute top-0 right-0 m-2">
                                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-500/90 text-white shadow-sm backdrop-blur-sm">
-                                                        {{ $book->genre->genre_name }}
+                                                        {{ $book->genre->name }}
                                                     </span>
                                                 </div>
                                                 <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
@@ -304,7 +315,7 @@
                         <div class="p-2 flex-1 flex flex-col">
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full truncate max-w-[70%]">
-                                    {{ $book->genre->genre_name }}
+                                    {{ $book->genre->name }}
                                 </span>
                                 @if(auth()->user()->favorites->contains($book))
                                     <form action="{{ route('user.favorite.remove', $book->id) }}" method="POST" class="inline shrink-0">

@@ -1,7 +1,25 @@
+{{--
+    Add New Book Form (Admin Only)
+    This view provides a form for administrators to add new books to the library.
+    Features:
+    - Cover image upload with preview
+    - Book details input (title, author, description)
+    - Genre selection from predefined categories
+    - Number of copies specification
+    - Form validation and error handling
+    
+    Sections:
+    1. Cover Image Upload
+    2. Basic Information (Title, Author)
+    3. Book Description
+    4. Additional Details (Copies, Genre)
+    5. Validation Errors Display
+--}}
+
 <x-layout>
     <div class="min-h-screen bg-gray-50 py-8">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Header -->
+            {{-- Header with Navigation --}}
             <div class="mb-8">
                 <div class="flex items-center justify-between">
                     <h1 class="text-2xl font-bold text-black">Add a New Book</h1>
@@ -110,9 +128,9 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
                                 >
                                     <option value="">Select a genre</option>
-                                    @foreach ($genre as $genre)
+                                    @foreach ($genres as $genre)
                                         <option value="{{ $genre->id }}" {{ old('genre_id') == $genre->id ? 'selected' : '' }}>
-                                            {{ $genre->genre_name }}
+                                            {{ $genre->name }} ({{ $genre->books_count }} books)
                                         </option>
                                     @endforeach
                                 </select>

@@ -37,17 +37,25 @@
                                     <div class="text-sm text-gray-500">{{ $borrowing->user->email }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $borrowing->borrowed_date->format('M d, Y') }}
+                                    @if($borrowing->borrowed_date)
+                                        {{ $borrowing->borrowed_date->format('M d, Y') }}
+                                    @else
+                                        N/A
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $borrowing->due_date->format('M d, Y') }}
+                                    @if($borrowing->due_date)
+                                        {{ $borrowing->due_date->format('M d, Y') }}
+                                    @else
+                                        N/A
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($borrowing->returned_date)
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Returned on {{ $borrowing->returned_date->format('M d, Y') }}
                                         </span>
-                                    @elseif($borrowing->due_date->isPast())
+                                    @elseif($borrowing->due_date && $borrowing->due_date->isPast())
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                             Overdue
                                         </span>

@@ -12,12 +12,19 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Controller handling all book borrowing operations.
+ * Manages borrowing books, returning them, and extending borrowing periods.
+ */
 class BookBorrowingController extends Controller
 {
-    private const MAX_BOOKS_PER_USER = 5;
-    public const MAX_EXTENSIONS = 2;
-    private const BORROW_PERIOD_DAYS = 14;
-    private const EXTENSION_DAYS = 7;
+    /**
+     * System-wide borrowing limits and settings
+     */
+    private const MAX_BOOKS_PER_USER = 5;    // Maximum number of books a user can borrow at once
+    public const MAX_EXTENSIONS = 2;         // Maximum number of times a borrowing can be extended
+    private const BORROW_PERIOD_DAYS = 14;   // Standard borrowing period in days
+    private const EXTENSION_DAYS = 7;        // Number of days added when extending a borrowing
 
     public function borrow(Books $book): RedirectResponse
     {

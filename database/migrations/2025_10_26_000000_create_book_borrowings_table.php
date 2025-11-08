@@ -6,24 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::create('book_user_borrowed', function (Blueprint $table) {
+        Schema::create('book_borrowings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
+            $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->dateTime('borrowed_date');
             $table->dateTime('due_date');
             $table->dateTime('returned_date')->nullable();
+            $table->integer('extensions_count')->default(0);
             $table->timestamps();
-
-            // Prevent duplicate borrows
-            $table->unique(['user_id', 'book_id', 'borrowed_date']);
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('book_user_borrowed');
+        Schema::dropIfExists('book_borrowings');
     }
 };

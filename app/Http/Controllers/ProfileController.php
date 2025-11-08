@@ -10,7 +10,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $borrowedBooks = auth()->user()->borrowedBooks()->paginate(5);
+        $borrowedBooks = auth()->user()->borrowedBooks()->with('book')->paginate(5);
         return view('user.user-profile', compact('borrowedBooks'));
     }
 

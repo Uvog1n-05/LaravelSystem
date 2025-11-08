@@ -1,8 +1,22 @@
 @use Carbon\Carbon
 
+{{--
+    User Profile Page
+    This view provides users with account management features:
+    - View and update personal information
+    - Change password
+    - View currently borrowed books
+    - Access quick actions for borrowed books
+    - Track borrowing status and due dates
+    
+    Layout:
+    - Left Column: Account settings forms
+    - Right Column: Currently borrowed books
+--}}
+
 <x-layout>
     <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <!-- Profile Header -->
+        {{-- Profile Header --}}
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900">Profile Settings</h1>
             <p class="mt-2 text-gray-600">Manage your account settings and view your borrowed books</p>
@@ -92,21 +106,25 @@
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Borrowed Books</h2>
                     @if($borrowedBooks->count() > 0)
                         <div class="space-y-4">
-                            @foreach($borrowedBooks as $book)
+                            @foreach($borrowedBooks as $borrowing)
                                 <div class="flex gap-4 p-3 bg-gray-50 rounded-md">
                                     <div class="flex-shrink-0 w-16">
-                                        <img src="{{ $book->cover_image_url }}" alt="{{ $book->title }}"
+                                        <img src="{{ $borrowing->book->cover_image_url }}" alt="{{ $borrowing->book->title }}"
                                             class="w-full h-auto rounded shadow"
                                             onerror="this.src='{{ asset('img/default-book-cover.jpg') }}'">
                                     </div>
                                     <div class="flex-grow min-w-0">
-                                        <h3 class="text-sm font-medium text-gray-900 truncate">{{ $book->title }}</h3>
-                                        <p class="text-xs text-gray-500">By {{ $book->author }}</p>
+                                        <h3 class="text-sm font-medium text-gray-900 truncate">{{ $borrowing->book->title }}</h3>
+                                        <p class="text-xs text-gray-500">By {{ $borrowing->book->author }}</p>
                                         <p class="text-xs text-gray-500 mt-1">
-                                            Due: {{ Carbon\Carbon::parse($book->pivot->due_date)->format('M d, Y') }}
+                                            @if($borrowing->due_date)
+                                                Due: {{ $borrowing->due_date->format('M d, Y') }}
+                                            @else
+                                                Due date not set
+                                            @endif
                                         </p>
                                         <div class="mt-2">
-                                            <form action="{{ route('books.return', $book) }}" method="POST" class="inline">
+                                            <form action="{{ route('books.return', $borrowing->book) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('PUT')
                                                 <button type="submit" class="text-xs text-blue-600 hover:text-blue-700">

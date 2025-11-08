@@ -5,9 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Books; 
 use App\Models\Genre;
+/**
+ * Controller handling all book-related operations in the library system.
+ */
 class BooksController extends Controller
 {
+    /**
+     * Display a listing of books with search and filter capabilities.
+     * Shows all books by default, can be filtered by genre, availability,
+     * and searched by title, author, or genre.
+     *
+     * @param Request $request The HTTP request containing search and filter parameters
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request) {
+        // Initialize query with genre relationship
         $query = Books::with('genre');
 
         // Apply search filter
@@ -17,7 +29,7 @@ class BooksController extends Controller
                 $q->where('title', 'LIKE', "%{$searchTerm}%")
                   ->orWhere('author', 'LIKE', "%{$searchTerm}%")
                   ->orWhereHas('genre', function($q) use ($searchTerm) {
-                      $q->where('genre_name', 'LIKE', "%{$searchTerm}%");
+                      $q->where('name', 'LIKE', "%{$searchTerm}%");
                   });
             });
         }
@@ -53,10 +65,10 @@ class BooksController extends Controller
             ? Books::with('genre')->orderBy('created_at', 'desc')->take(16)->get()
             : collect();
 
-        // Get all genres with their books
-        $genres = Genre::with(['books' => function($query) {
-            $query->orderBy('created_at', 'desc');
-        }])->get();
+        // Get all genres with their book counts
+        $genres = Genre::withCount('books')
+            ->orderBy('name')
+            ->get();
 
         return view('books.index', [
             'books' => $books,
@@ -78,8 +90,10 @@ class BooksController extends Controller
                 ->with('error', 'Only administrators can add new books.');
         }
         
-        $genre = Genre::all();
-        return view('books.create' , ['genre' => $genre]);
+        $genres = Genre::withCount('books')
+            ->orderBy('name')
+            ->get();
+        return view('books.create', ['genres' => $genres]);
     }
 
     public function store(Request $request) {
