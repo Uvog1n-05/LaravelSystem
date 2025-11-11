@@ -161,24 +161,22 @@
                             <p class="mt-1 text-gray-500 text-sm">Discover our latest additions to the library</p>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <button @click="swiper.slidePrev()" 
-                                    class="swiper-button-prev p-3 rounded-full bg-white shadow-sm border border-gray-100 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all duration-200">
+                <button x-ref="prev" @click="$data.swiper && $data.swiper.slidePrev()" 
+                    class="p-3 rounded-full bg-white shadow-sm border border-gray-100 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all duration-200">
                                 <i class="fas fa-chevron-left text-lg"></i>
                             </button>
-                            <button @click="swiper.slideNext()" 
-                                    class="swiper-button-next p-3 rounded-full bg-white shadow-sm border border-gray-100 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all duration-200">
+                <button x-ref="next" @click="$data.swiper && $data.swiper.slideNext()" 
+                    class="p-3 rounded-full bg-white shadow-sm border border-gray-100 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition-all duration-200">
                                 <i class="fas fa-chevron-right text-lg"></i>
                             </button>
                         </div>
                     </div>
 
                     <div class="relative overflow-hidden rounded-2xl">
-                        <div class="swiper-container">
+                        <div class="swiper" x-ref="container">
                             <div class="swiper-wrapper">
-                                @foreach ($featuredBooks->chunk(4) as $bookPair)
-                                <div class="swiper-slide">
-                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 px-2">
-                                        @foreach ($bookPair as $book)
+                                @foreach ($featuredBooks as $book)
+                                    <div class="swiper-slide px-2">
                                         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
                                             <div class="aspect-[2/3] relative overflow-hidden">
                                                 <img 
@@ -232,13 +230,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
                                     </div>
-                                </div>
                                 @endforeach
                             </div>
                             <!-- Add pagination -->
-                            <div class="swiper-pagination mt-6"></div>
+                            <div class="swiper-pagination mt-6" x-ref="pagination"></div>
                         </div>
                     </div>
                 </div>
@@ -249,52 +245,53 @@
                         Alpine.data('carousel', () => ({
                             swiper: null,
                             init() {
-                                this.swiper = new Swiper('.swiper-container', {
-                                    slidesPerView: 2,
+                                // initialize using the actual DOM elements (Alpine refs)
+                                const slidesCount = this.$refs.container.querySelectorAll('.swiper-slide').length;
+
+                                // Desired slides per view on desktop
+                                const desktopSlides = 4;
+
+                                // Only enable loop/autoplay when we have more slides than the desktop view
+                                const loopEnabled = slidesCount > desktopSlides;
+
+                                // Build breakpoints that cap slidesPerView to the number of slides available
+                                const breakpoints = {
+                                    640: { slidesPerView: Math.min(2, slidesCount), spaceBetween: 20 },
+                                    768: { slidesPerView: Math.min(3, slidesCount), spaceBetween: 24 },
+                                    1024: { slidesPerView: Math.min(desktopSlides, slidesCount), spaceBetween: 28 }
+                                };
+
+                                this.swiper = new Swiper(this.$refs.container, {
+                                    slidesPerView: Math.min(desktopSlides, slidesCount),
                                     spaceBetween: 20,
-                                    loop: true,
+                                    loop: loopEnabled,
                                     speed: 800,
-                                    
-                                    // Enable better touch handling
                                     grabCursor: true,
-                                    
-                                    // Navigation
+
+                                    // Disable/enhance behavior when there aren't enough slides
+                                    watchOverflow: true,
+
                                     navigation: {
-                                        nextEl: '.swiper-button-next',
-                                        prevEl: '.swiper-button-prev',
+                                        nextEl: this.$refs.next,
+                                        prevEl: this.$refs.prev,
                                     },
 
-                                    // Autoplay configuration
-                                    autoplay: {
+                                    autoplay: loopEnabled ? {
                                         delay: 5000,
                                         disableOnInteraction: false,
-                                    },
+                                    } : false,
 
-                                    // Pagination
-                                    pagination: {
-                                        el: '.swiper-pagination',
+                                    pagination: slidesCount > 1 ? {
+                                        el: this.$refs.pagination,
                                         clickable: true,
-                                    },
+                                    } : false,
 
-                                    // Responsive breakpoints
-                                    breakpoints: {
-                                        640: {
-                                            slidesPerView: 2,
-                                            spaceBetween: 20,
-                                        },
-                                        768: {
-                                            slidesPerView: 3,
-                                            spaceBetween: 30,
-                                        },
-                                        1024: {
-                                            slidesPerView: 4,
-                                            spaceBetween: 30,
-                                        }
-                                    }
+                                    breakpoints,
                                 });
 
                                 // Add keyboard navigation
                                 document.addEventListener('keydown', (e) => {
+                                    if (!this.swiper) return;
                                     if (e.key === 'ArrowLeft') this.swiper.slidePrev();
                                     if (e.key === 'ArrowRight') this.swiper.slideNext();
                                 });
