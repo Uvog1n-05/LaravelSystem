@@ -177,7 +177,8 @@
                             <div class="swiper-wrapper">
                                 @foreach ($featuredBooks as $book)
                                     <div class="swiper-slide px-2">
-                                        <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
+                                        <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group cursor-pointer"
+                                             onclick="window.location='{{ route('books.show', $book) }}'" role="button" tabindex="0">
                                             <div class="aspect-[2/3] relative overflow-hidden">
                                                 <img 
                                                     src="{{ $book->cover_image_url }}" 
@@ -185,21 +186,22 @@
                                                     class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                                     onerror="this.src='{{ asset('img/default-book-cover.jpg') }}'"
                                                 >
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                                                 <div class="absolute top-0 right-0 m-2">
                                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-500/90 text-white shadow-sm backdrop-blur-sm">
                                                         {{ $book->genre->name }}
                                                     </span>
                                                 </div>
-                                                <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                                <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10 pointer-events-auto">
                                                     <h3 class="font-medium text-sm mb-1">{{ $book->title }}</h3>
                                                     <p class="text-xs text-white/80">by {{ $book->author }}</p>
                                                     @auth
                                                         @if($book->number_of_books > 0)
-                                                            <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-2">
+                                                            <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-2" onsubmit="event.stopPropagation()">
                                                                 @csrf
                                                                 <button type="submit" 
-                                                                    class="w-full text-xs bg-white/90 hover:bg-white text-indigo-600 px-3 py-1.5 rounded-lg font-medium transition-colors duration-200">
+                                                                    class="w-full text-xs bg-white/90 hover:bg-white text-indigo-600 px-3 py-1.5 rounded-lg font-medium transition-colors duration-200"
+                                                                    onclick="event.stopPropagation()">
                                                                     <i class="fas fa-book-reader mr-1.5"></i>Request to Borrow
                                                                 </button>
                                                             </form>
@@ -211,7 +213,7 @@
                                                     @endauth
                                                 </div>
                                             </div>
-                                            <div class="p-4">
+                                            <div class="p-4 relative z-20">
                                                 <h3 class="text-sm font-medium text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                                                     {{ $book->title }}
                                                 </h3>
@@ -223,10 +225,11 @@
                                                         <i class="fas fa-book-open mr-1.5 text-indigo-400"></i>
                                                         {{ $book->number_of_books }} available
                                                     </span>
-                                                    <a href="{{ route('books.show', $book) }}" 
-                                                       class="text-xs text-indigo-600 hover:text-indigo-700 font-medium">
-                                                        Details →
-                                                    </a>
+                                                                    <a href="{{ route('books.show', $book) }}" 
+                                                                       class="text-xs text-indigo-600 hover:text-indigo-700 font-medium relative z-30 pointer-events-auto"
+                                                                       onclick="event.stopPropagation()">
+                                                                        Details →
+                                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

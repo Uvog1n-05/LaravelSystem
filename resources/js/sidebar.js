@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.querySelector('.sidebar-toggle');
     
     function toggleSidebar() {
+        // Guard: some pages may not render a sidebar element. Avoid errors when sidebar is null.
+        if (!sidebar) return;
         sidebar.classList.toggle('-translate-x-full');
     }
 
