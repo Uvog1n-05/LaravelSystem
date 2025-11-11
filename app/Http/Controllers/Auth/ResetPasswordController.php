@@ -30,8 +30,10 @@ class ResetPasswordController extends Controller
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
+                // The User model already hashes passwords via the setPasswordAttribute mutator.
+                // Pass the plain password here to avoid double-hashing.
                 $user->forceFill([
-                    'password' => Hash::make($password),
+                    'password' => $password,
                     'remember_token' => Str::random(60),
                 ])->save();
 
@@ -40,7 +42,8 @@ class ResetPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
+                    // Redirect to the named login route used in routes/web.php
+                    ? redirect()->route('show.login')->with('status', __($status))
                     : back()->withErrors(['email' => __($status)]);
     }
 }
