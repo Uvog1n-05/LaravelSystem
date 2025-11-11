@@ -111,7 +111,7 @@
                     </div>
                 </div>
 
-                <!-- Navigation Links -->
+                <!-- Navigation Links -->  
                 <nav class="flex-1 p-4 space-y-2">
                     @auth
                         <a href="{{ route('user.dashboard') }}" 
