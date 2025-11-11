@@ -47,6 +47,57 @@ class AdminController extends Controller
         return view('admin.genres', compact('genres'));
     }
 
+    /**
+     * Store a newly created genre.
+     */
+    public function store(Request $request)
+    {
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255|unique:genres,name',
+            'description' => 'nullable|string|max:2000',
+        ]);
+
+        \App\Models\Genre::create([
+            'name' => $data['name'],
+            'description' => $data['description'] ?? null,
+        ]);
+
+        return back()->with('success', 'Genre created successfully');
+    }
+
+    /**
+     * Remove the specified genre.
+     */
+    public function destroy(\App\Models\Genre $genre)
+    {
+        // Prevent deletion if there are books
+        if ($genre->books()->count() > 0) {
+            return back()->with('error', 'Cannot delete a genre that has books');
+        }
+
+        $genre->delete();
+        return back()->with('success', 'Genre deleted successfully');
+    }
+
+    /**
+     * Update the specified genre.
+     */
+    public function update(Request $request, \App\Models\Genre $genre)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255|unique:genres,name,' . $genre->id,
+            'description' => 'nullable|string|max:2000',
+        ]);
+
+        $genre->update([
+            'name' => $data['name'],
+            'description' => $data['description'] ?? null,
+        ]);
+
+        return back()->with('success', 'Genre updated successfully');
+    }
+
     public function settings()
     {
         return view('admin.settings');

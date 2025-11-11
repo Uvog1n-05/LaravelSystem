@@ -142,8 +142,9 @@
                 </form>
             </div>
         </div>
+            <!-- Genres List removed from public library as requested -->
 
-        <!-- Featured Books Carousel -->
+            <!-- Featured Books Carousel -->
             @if($featuredBooks->count() > 0)
                 <div class="mb-12 relative" x-data="carousel">
                     <div class="flex items-center justify-between mb-6">

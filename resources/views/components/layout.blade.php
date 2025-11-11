@@ -119,41 +119,72 @@
                            class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('user.dashboard') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
                             <i class="fas fa-home w-5 h-5 mr-3"></i> Dashboard
                         </a>
-                        
-                        <a href="{{ route('books.index') }}" 
-                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.index') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                            <i class="fas fa-book w-5 h-5 mr-3"></i> Books
-                        </a>
-                        
-                        <a href="{{ route('user.favorite') }}" 
-                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('user.favorite') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                            <i class="fas fa-heart w-5 h-5 mr-3"></i> Favorites
-                        </a>
-                        
-                        <a href="{{ route('user.profile') }}" 
-                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('user.profile') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                            <i class="fas fa-user w-5 h-5 mr-3"></i> Profile
-                        </a>
 
-                        <a href="{{ route('books.history') }}" 
-                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.history') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                            <i class="fas fa-history w-5 h-5 mr-3"></i> Borrowing History
-                        </a>
+                        <!-- Collapsible Library Section to reduce sidebar clutter -->
+                        <div x-data="{ open: false }" class="">
+                            <button @click="open = !open" class="flex items-center w-full p-2 text-gray-700 rounded-lg transition-colors hover:bg-blue-50">
+                                <i class="fas fa-book w-5 h-5 mr-3"></i>
+                                <span class="flex-1 text-left">Library</span>
+                                <i class="fas fa-chevron-down transition-transform" :class="{ 'transform rotate-180': open }"></i>
+                            </button>
 
-                        <a href="{{ route('borrow-requests.user') }}" 
-                           class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('borrow-requests.user') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
-                            <i class="fas fa-clock w-5 h-5 mr-3"></i>  My Borrow Requests
-                            @php
-                                $pendingCount = \App\Models\BorrowRequest::where('user_id', auth()->id())
-                                    ->where('status', 'pending')
-                                    ->count();
-                            @endphp
-                            @if($pendingCount > 0)
-                                <span class="ml-auto inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-500 rounded-full">
-                                    {{ $pendingCount }}
-                                </span>
-                            @endif
-                        </a>
+                       <div x-show="open"
+                           x-transition:enter="transition ease-out duration-200 transform"
+                           x-transition:enter-start="opacity-0 -translate-y-2"
+                           x-transition:enter-end="opacity-100 translate-y-0"
+                           x-transition:leave="transition ease-in duration-150 transform"
+                           x-transition:leave-start="opacity-100 translate-y-0"
+                           x-transition:leave-end="opacity-0 -translate-y-2"
+                           class="pl-6 mt-1 space-y-1">
+                                <a href="{{ route('books.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.index') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                    <i class="fas fa-book w-4 h-4 mr-3"></i> Books
+                                </a>
+
+                                <a href="{{ route('user.favorite') }}" class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('user.favorite') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                    <i class="fas fa-heart w-4 h-4 mr-3"></i> Favorites
+                                </a>
+
+                                <a href="{{ route('books.history') }}" class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('books.history') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                    <i class="fas fa-history w-4 h-4 mr-3"></i> Borrowing History
+                                </a>
+
+                                <a href="{{ route('borrow-requests.user') }}" class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('borrow-requests.user') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                    <i class="fas fa-clock w-4 h-4 mr-3"></i> My Borrow Requests
+                                    @php
+                                        $pendingCount = \App\Models\BorrowRequest::where('user_id', auth()->id())
+                                            ->where('status', 'pending')
+                                            ->count();
+                                    @endphp
+                                    @if($pendingCount > 0)
+                                        <span class="ml-auto inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-500 rounded-full">
+                                            {{ $pendingCount }}
+                                        </span>
+                                    @endif
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Account section (collapsed) -->
+                        <div x-data="{ openAccount: false }" class="mt-2">
+                            <button @click="openAccount = !openAccount" class="flex items-center w-full p-2 text-gray-700 rounded-lg transition-colors hover:bg-blue-50">
+                                <i class="fas fa-user w-5 h-5 mr-3"></i>
+                                <span class="flex-1 text-left">Account</span>
+                                <i class="fas fa-chevron-down transition-transform" :class="{ 'transform rotate-180': openAccount }"></i>
+                            </button>
+
+                       <div x-show="openAccount"
+                           x-transition:enter="transition ease-out duration-200 transform"
+                           x-transition:enter-start="opacity-0 -translate-y-2"
+                           x-transition:enter-end="opacity-100 translate-y-0"
+                           x-transition:leave="transition ease-in duration-150 transform"
+                           x-transition:leave-start="opacity-100 translate-y-0"
+                           x-transition:leave-end="opacity-0 -translate-y-2"
+                           class="pl-6 mt-1 space-y-1">
+                                <a href="{{ route('user.profile') }}" class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('user.profile') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                    <i class="fas fa-id-badge w-4 h-4 mr-3"></i> Profile
+                                </a>
+                            </div>
+                        </div>
 
                         @if(auth()->user()->isAdmin())
                             <div class="border-t border-gray-200 my-4"></div>
@@ -183,6 +214,11 @@
                                     <a href="{{ route('admin.users') }}" 
                                        class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.users') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
                                         <i class="fas fa-users w-5 h-5 mr-3"></i> Manage Users
+                                    </a>
+
+                                    <a href="{{ route('admin.genres') }}" 
+                                       class="flex items-center p-2 text-gray-700 rounded-lg transition-colors {{ request()->routeIs('admin.genres') ? 'bg-blue-100 text-blue-600' : 'hover:bg-blue-50' }}">
+                                        <i class="fas fa-tags w-5 h-5 mr-3"></i> Manage Genres
                                     </a>
 
                                     <a href="{{ route('admin.borrow-requests') }}" 

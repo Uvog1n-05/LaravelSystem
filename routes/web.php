@@ -91,6 +91,9 @@
             ->name('admin.borrowings.approve-return');
     Route::get('/books', [App\Http\Controllers\AdminController::class, 'books'])->name('admin.books');
     Route::get('/genres', [App\Http\Controllers\AdminController::class, 'genres'])->name('admin.genres');
+    Route::post('/genres', [App\Http\Controllers\AdminController::class, 'store'])->name('admin.genres.store');
+    Route::delete('/genres/{genre}', [App\Http\Controllers\AdminController::class, 'destroy'])->name('admin.genres.destroy');
+    Route::patch('/genres/{genre}', [App\Http\Controllers\AdminController::class, 'update'])->name('admin.genres.update');
     Route::get('/borrowings', [App\Http\Controllers\BookBorrowingController::class, 'allBorrowings'])->name('admin.borrowings');
     Route::get('/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('admin.settings');
 });
