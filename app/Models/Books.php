@@ -94,8 +94,11 @@ class Books extends Model
 
     public function getAvailableCopiesAttribute()
     {
-        $borrowedCount = $this->activeBorrowings()->count();
-        return $this->number_of_books - $borrowedCount;
+        // The application tracks current available copies in the `number_of_books`
+        // column (it is decremented when a borrow is approved and incremented
+        // when a return is verified). Return that value directly so availability
+        // checks are consistent across the codebase.
+        return (int) $this->number_of_books;
     }
 
     public function isAvailable()
