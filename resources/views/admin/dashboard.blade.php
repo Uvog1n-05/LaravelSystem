@@ -125,6 +125,21 @@
                         </div>
                     </a>
 
+                    <a href="{{ route('admin.genres') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex-shrink-0">
+                            <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-tags text-amber-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-900">Manage Genres</p>
+                            <p class="text-sm text-gray-500">Create, edit, and organize genres</p>
+                        </div>
+                        <div class="ml-auto">
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </a>
+
                     <a href="{{ route('admin.borrowings') }}" class="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
