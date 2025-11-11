@@ -56,7 +56,7 @@
                         <form action="{{ route('admin.users.update-role', $user) }}" method="POST" class="inline-flex">
                             @csrf
                             @method('PATCH')
-                            <select name="role" onchange="this.form.submit()" 
+                            <select name="role" onchange="handleRoleChange(this)" 
                                 class="text-sm border border-gray-200 rounded-lg py-1 pl-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
                                 <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
@@ -71,14 +71,15 @@
 </div>
 
 <script>
+// Simple client-side user search
 document.getElementById('userSearch').addEventListener('keyup', function() {
     let filter = this.value.toLowerCase();
     let rows = document.querySelectorAll('tbody tr');
-    
+
     rows.forEach(row => {
         let name = row.querySelector('td:first-child').textContent.toLowerCase();
         let email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        
+
         if (name.includes(filter) || email.includes(filter)) {
             row.style.display = '';
         } else {
@@ -86,4 +87,37 @@ document.getElementById('userSearch').addEventListener('keyup', function() {
         }
     });
 });
+
+// Role change confirmation: ensures admin confirms elevation to admin
+function handleRoleChange(select) {
+    try {
+        const newRole = select.value;
+        const previous = select.dataset.previous || 'user';
+
+        if (newRole === 'admin') {
+            const ok = confirm('Are you sure you want to make this user an admin? This will grant them elevated privileges.');
+            if (!ok) {
+                // revert to previous value
+                select.value = previous;
+                return;
+            }
+        }
+
+        // submit the form for permitted changes
+        select.form.submit();
+    } catch (e) {
+        console.error('Error handling role change', e);
+    }
+}
+
+// Remember previous value on focus / mousedown so we can revert if cancelled
+document.querySelectorAll('select[name="role"]').forEach(function(sel) {
+    sel.addEventListener('focus', function() {
+        this.dataset.previous = this.value;
+    });
+    sel.addEventListener('mousedown', function() {
+        this.dataset.previous = this.value;
+    });
+});
+</script>
 </x-layout>
