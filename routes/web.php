@@ -86,6 +86,9 @@
         Route::patch('/borrow-requests/{request}/{action}', [App\Http\Controllers\BorrowRequestsController::class, 'process'])
             ->name('admin.borrow-requests.process')
             ->where('action', 'approve|decline');
+        // Admin approve return (verify a user's return request)
+        Route::patch('/borrowings/{borrowing}/approve-return', [App\Http\Controllers\BookBorrowingController::class, 'approveReturn'])
+            ->name('admin.borrowings.approve-return');
     Route::get('/books', [App\Http\Controllers\AdminController::class, 'books'])->name('admin.books');
     Route::get('/genres', [App\Http\Controllers\AdminController::class, 'genres'])->name('admin.genres');
     Route::get('/borrowings', [App\Http\Controllers\BookBorrowingController::class, 'allBorrowings'])->name('admin.borrowings');

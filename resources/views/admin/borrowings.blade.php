@@ -55,6 +55,17 @@
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Returned on {{ $borrowing->returned_date->format('M d, Y') }}
                                         </span>
+                                    @elseif($borrowing->return_requested)
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Return requested
+                                            </span>
+                                            <form action="{{ route('admin.borrowings.approve-return', $borrowing) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="text-sm text-white bg-green-600 px-2 py-1 rounded hover:bg-green-700">Approve</button>
+                                            </form>
+                                        </div>
                                     @elseif($borrowing->due_date && $borrowing->due_date->isPast())
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                             Overdue

@@ -88,19 +88,51 @@ class BookBorrowingController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($borrow, $book) {
-                // Update the borrow record
-                $borrow->update([
-                    'returned_date' => now()
-                ]);
+            // Instead of directly marking the book returned, create a return request
+            // that an admin must verify before the book is marked as returned.
+            $borrow->update([
+                'return_requested' => true,
+                'return_requested_at' => now(),
+            ]);
 
-                // Increase the number of available books
-                $book->increment('number_of_books');
-            });
-
-            return back()->with('success', 'Book returned successfully.');
+            return back()->with('success', 'Return requested. An admin will verify and complete the return shortly.');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to return the book. Please try again.');
+        }
+    }
+
+    /**
+     * Admin: Approve and verify a user's return request.
+     */
+    public function approveReturn(BookBorrowing $borrowing): RedirectResponse
+    {
+        // Ensure current user is admin
+        if (!auth()->user() || !auth()->user()->isAdmin()) {
+            return redirect()->route('home')->with('error', 'Unauthorized access.');
+        }
+
+        if (!$borrowing->return_requested || $borrowing->returned_date) {
+            return back()->with('error', 'No pending return request for this borrowing.');
+        }
+
+        try {
+            DB::transaction(function () use ($borrowing) {
+                // Mark as returned and record verifier
+                $borrowing->update([
+                    'returned_date' => now(),
+                    'return_requested' => false,
+                    'return_verified_by' => auth()->id(),
+                    'return_verified_at' => now(),
+                ]);
+
+                // Increment book stock
+                $borrowing->book->increment('number_of_books');
+            });
+
+            return back()->with('success', 'Return verified and completed.');
+        } catch (\Exception $e) {
+            \Log::error('Error approving return: ' . $e->getMessage());
+            return back()->with('error', 'Failed to approve return. Please try again.');
         }
     }
 

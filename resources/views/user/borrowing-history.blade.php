@@ -170,7 +170,9 @@
                                         
                                         @if(!$borrowing->returned_date)
                                             <div class="mt-3 flex gap-2">
-                                                @if(!$borrowing->returned_date)
+                                                @if($borrowing->return_requested)
+                                                    <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">Return requested</span>
+                                                @else
                                                     <form action="{{ route('books.return', $borrowing->book) }}" method="POST">
                                                         @csrf
                                                         @method('PUT')
@@ -180,17 +182,17 @@
                                                             Return Book
                                                         </button>
                                                     </form>
-                                                    
-                                                    @if(!$borrowing->isOverdue() && $borrowing->extensions_count < \App\Http\Controllers\BookBorrowingController::MAX_EXTENSIONS)
-                                                        <form action="{{ route('books.extend', $borrowing->book) }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" 
-                                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                                                                <i class="fas fa-calendar-plus mr-1.5"></i>
-                                                                Extend Period (+7 days)
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                @endif
+
+                                                @if(!$borrowing->isOverdue() && $borrowing->extensions_count < \App\Http\Controllers\BookBorrowingController::MAX_EXTENSIONS)
+                                                    <form action="{{ route('books.extend', $borrowing->book) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                                                            <i class="fas fa-calendar-plus mr-1.5"></i>
+                                                            Extend Period (+7 days)
+                                                        </button>
+                                                    </form>
                                                 @endif
                                             </div>
                                         @endif

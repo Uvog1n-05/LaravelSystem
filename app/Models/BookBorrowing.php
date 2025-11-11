@@ -29,13 +29,21 @@ class BookBorrowing extends Model
         'borrowed_date',     // When the book was borrowed
         'due_date',         // When the book should be returned
         'returned_date',    // When the book was actually returned (null if not returned)
-        'extensions_count'  // Number of times the borrowing period was extended
+        'extensions_count', // Number of times the borrowing period was extended
+        // New return verification workflow fields
+        'return_requested',
+        'return_requested_at',
+        'return_verified_by',
+        'return_verified_at',
     ];
 
     protected $casts = [
         'borrowed_date' => 'datetime',
         'due_date' => 'datetime',
-        'returned_date' => 'datetime'
+        'returned_date' => 'datetime',
+        'return_requested_at' => 'datetime',
+        'return_verified_at' => 'datetime',
+        'return_requested' => 'boolean',
     ];
 
     public function user(): BelongsTo
