@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('books', function (Blueprint $table) {
             $table->string('cover_image')->nullable()->after('about');
-        });
+            });
     }
 
     public function down()

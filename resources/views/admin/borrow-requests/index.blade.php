@@ -53,6 +53,11 @@
                                                         <div class="text-sm text-gray-500">
                                                             Requested {{ $request->created_at->diffForHumans() }}
                                                         </div>
+                                                        @if($request->reason)
+                                                            <div class="mt-2 text-sm text-gray-600">
+                                                                <strong>Reason:</strong> {{ \Illuminate\Support\Str::limit($request->reason, 120) }}
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>

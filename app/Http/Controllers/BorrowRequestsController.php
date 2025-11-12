@@ -34,7 +34,7 @@ class BorrowRequestsController extends Controller
 
     private const MAX_TOTAL_BOOKS = 5;
 
-    public function store(Books $book): RedirectResponse
+    public function store(\Illuminate\Http\Request $request, Books $book): RedirectResponse
     {
         // Check if user already has a pending request for this book
         $existingRequest = BorrowRequest::where('user_id', auth()->id())
@@ -70,10 +70,16 @@ class BorrowRequestsController extends Controller
             );
         }
 
-        // Create the borrow request
+        // Validate and create the borrow request (store user's reason if provided)
+        $data = $request->validate([
+            'reason' => ['nullable', 'string', 'max:2000']
+        ]);
+
         BorrowRequest::create([
             'user_id' => auth()->id(),
-            'book_id' => $book->id
+            'book_id' => $book->id,
+            'reason' => $data['reason'] ?? null,
+            'status' => 'pending'
         ]);
 
         return back()->with('success', 'Your borrow request has been submitted successfully.');

@@ -37,7 +37,7 @@
                         id="password"
                         name="password"
                         required
-                        placeholder="Choose a password"
+                        placeholder="Enter Password"
                     >
                 </div>
 

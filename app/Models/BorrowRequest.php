@@ -14,9 +14,11 @@ class BorrowRequest extends Model
         'user_id',
         'book_id',
         'status',
+        'reason',
         'admin_note',
         'processed_at'
     ];
+    
 
     protected $casts = [
         'processed_at' => 'datetime'

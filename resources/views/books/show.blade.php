@@ -56,14 +56,29 @@
                                     Request Pending
                                 </span>
                             @elseif($books->number_of_books > 0)
-                                <form action="{{ route('borrow-requests.store', ['book' => $books->id]) }}" method="POST" class="inline-flex">
-                                    @csrf
-                                    <button type="submit" 
+                                <div x-data="{ open:false }" class="inline-flex">
+                                    <button type="button" @click="open = true" 
                                         class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                         <i class="fas fa-book-reader mr-2"></i>
                                         Request to Borrow
                                     </button>
-                                </form>
+
+                                    <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                                        <div @click.away="open = false" class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+                                            <h3 class="text-lg font-semibold">Request to Borrow</h3>
+                                            <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
+                                            <form action="{{ route('borrow-requests.store', ['book' => $books->id]) }}" method="POST" class="mt-4">
+                                                @csrf
+                                                <label class="block text-sm font-medium text-gray-700">Reason for borrowing (optional)</label>
+                                                <textarea name="reason" rows="4" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm" placeholder="Tell us why you need this book"></textarea>
+                                                <div class="mt-4 flex justify-end gap-2">
+                                                    <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100">Cancel</button>
+                                                    <button type="submit" class="px-4 py-2 text-sm rounded bg-blue-600 text-white">Submit Request</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             @else
                                 <span class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-200 rounded-md font-medium text-sm text-gray-500">
                                     <i class="fas fa-exclamation-circle mr-2"></i>
