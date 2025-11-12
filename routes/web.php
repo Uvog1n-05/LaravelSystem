@@ -54,6 +54,7 @@
             Route::get('/history', [BookBorrowingController::class, 'history'])->name('history');
             Route::post('/{book}/borrow', [BookBorrowingController::class, 'borrow'])->name('borrow');
             Route::put('/{book}/return', [BookBorrowingController::class, 'returnBook'])->name('return');
+            Route::put('/{book}/cancel-return', [BookBorrowingController::class, 'cancelReturn'])->name('cancel-return');
             Route::post('/{book}/extend', [BookBorrowingController::class, 'extend'])->name('extend');
         });
 

@@ -102,6 +102,34 @@ class BookBorrowingController extends Controller
     }
 
     /**
+     * Allow a user to cancel a previously made return request.
+     */
+    public function cancelReturn(Books $book): RedirectResponse
+    {
+        $borrow = BookBorrowing::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->whereNull('returned_date')
+            ->where('return_requested', true)
+            ->first();
+
+        if (!$borrow) {
+            return back()->with('error', 'No pending return request found for this book.');
+        }
+
+        try {
+            $borrow->update([
+                'return_requested' => false,
+                'return_requested_at' => null,
+            ]);
+
+            return back()->with('success', 'Return request cancelled.');
+        } catch (\Exception $e) {
+            \Log::error('Error cancelling return request: ' . $e->getMessage());
+            return back()->with('error', 'Failed to cancel return request. Please try again.');
+        }
+    }
+
+    /**
      * Admin: Approve and verify a user's return request.
      */
     public function approveReturn(BookBorrowing $borrowing): RedirectResponse
@@ -192,17 +220,42 @@ class BookBorrowingController extends Controller
     /**
      * List all borrowings for admin view
      */
-    public function allBorrowings(): View
+    public function allBorrowings(\Illuminate\Http\Request $request): View
     {
         // Ensure user is admin
         if (!auth()->user()->isAdmin()) {
             return redirect()->route('home')->with('error', 'Unauthorized access.');
         }
 
-        $borrowings = BookBorrowing::with(['book', 'user'])
-            ->orderBy('borrowed_date', 'desc')
-            ->paginate(15);
+        $status = $request->query('status', 'all');
 
-        return view('admin.borrowings', compact('borrowings'));
+        $query = BookBorrowing::with(['book', 'user']);
+
+        switch ($status) {
+            case 'active':
+                // Active = not returned and not currently requested for return
+                $query->whereNull('returned_date')
+                      ->where(function($q) {
+                          $q->where('return_requested', false)->orWhereNull('return_requested');
+                      });
+                break;
+            case 'returned':
+                $query->whereNotNull('returned_date');
+                break;
+            case 'requested':
+                $query->where('return_requested', true);
+                break;
+            case 'overdue':
+                $query->whereNull('returned_date')->where('due_date', '<', now());
+                break;
+            case 'all':
+            default:
+                // no extra filter
+                break;
+        }
+
+        $borrowings = $query->orderBy('borrowed_date', 'desc')->paginate(15)->appends($request->only('status'));
+
+        return view('admin.borrowings', compact('borrowings', 'status'));
     }
 }

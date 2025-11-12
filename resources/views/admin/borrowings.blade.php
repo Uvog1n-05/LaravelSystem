@@ -2,8 +2,27 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800">All Book Borrowings</h2>
-                <p class="mt-1 text-sm text-gray-600">View and manage all book borrowings in the system</p>
+                <div class="sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">All Book Borrowings</h2>
+                        <p class="mt-1 text-sm text-gray-600">View and manage all book borrowings in the system</p>
+                    </div>
+
+                    <div class="mt-4 sm:mt-0">
+                        <form method="GET" action="" class="flex items-center space-x-2">
+                            <label for="status" class="sr-only">Filter by status</label>
+                            <select id="status" name="status" class="rounded-md border-gray-300 text-sm">
+                                <option value="all" {{ (isset($status) && $status === 'all') ? 'selected' : (!isset($status) ? 'selected' : '') }}>All</option>
+                                <option value="active" {{ (isset($status) && $status === 'active') ? 'selected' : '' }}>Active</option>
+                                <option value="requested" {{ (isset($status) && $status === 'requested') ? 'selected' : '' }}>Return Requested</option>
+                                <option value="overdue" {{ (isset($status) && $status === 'overdue') ? 'selected' : '' }}>Overdue</option>
+                                <option value="returned" {{ (isset($status) && $status === 'returned') ? 'selected' : '' }}>Returned</option>
+                            </select>
+
+                            <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded">Filter</button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <div class="overflow-x-auto">

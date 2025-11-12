@@ -22,7 +22,7 @@
             <!-- Grid View -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($favorites as $book)
-                    <div class="flex flex-col h-full bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <div class="book-card flex flex-col h-full bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
                         <div class="relative pt-[140%] rounded-t-lg overflow-hidden group">
                             <img src="{{ $book->cover_image_url }}" alt="{{ $book->title }}" 
                                 class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300">
@@ -80,21 +80,31 @@
     </div>
 
     <script>
-        // Search functionality
-        document.getElementById('searchFavorites').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let cards = document.querySelectorAll('.book-card');
-            
-            cards.forEach(card => {
-                let title = card.querySelector('h3').textContent.toLowerCase();
-                let author = card.querySelector('p').textContent.toLowerCase();
-                
-                if (title.includes(filter) || author.includes(filter)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
+        // Search functionality (client-side filter)
+        (function() {
+            const input = document.getElementById('searchFavorites');
+            if (!input) return;
+
+            function applyFilter() {
+                const filter = input.value.trim().toLowerCase();
+                const cards = document.querySelectorAll('.book-card');
+
+                cards.forEach(card => {
+                    const titleElem = card.querySelector('h3');
+                    const authorElem = card.querySelector('p');
+                    const title = titleElem ? titleElem.textContent.toLowerCase() : '';
+                    const author = authorElem ? authorElem.textContent.toLowerCase() : '';
+
+                    if (!filter || title.includes(filter) || author.includes(filter)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            input.addEventListener('input', applyFilter);
+            input.addEventListener('keyup', applyFilter);
+        })();
     </script>
 </x-layout>

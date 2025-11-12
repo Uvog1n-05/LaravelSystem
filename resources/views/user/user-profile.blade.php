@@ -124,13 +124,24 @@
                                             @endif
                                         </p>
                                         <div class="mt-2">
-                                            <form action="{{ route('books.return', $borrowing->book) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <button type="submit" class="text-xs text-blue-600 hover:text-blue-700">
-                                                    Return Book
-                                                </button>
-                                            </form>
+                                            @if($borrowing->return_requested)
+                                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">Return requested</span>
+                                                <form action="{{ route('books.cancel-return', $borrowing->book) }}" method="POST" class="inline ml-2">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="text-xs text-red-600 hover:text-red-700">
+                                                        Cancel Request
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('books.return', $borrowing->book) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="text-xs text-blue-600 hover:text-blue-700">
+                                                        Return Book
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

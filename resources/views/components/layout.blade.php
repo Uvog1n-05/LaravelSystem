@@ -87,8 +87,9 @@
                 <!-- Logo -->
                 <div class="sticky top-0 z-10 bg-white border-b border-gray-200">
                     <div class="p-4 flex justify-between items-center">
-                        <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                            <span class="text-3xl font-bold text-blue-600">TMC LIBRARY</span>
+                        <a href="{{ route('home') }}" class="flex items-center gap-2" aria-label="TMC Library home">
+                            <i class="fas fa-book-reader text-3xl text-blue-600" aria-hidden="true"></i>
+                            <span class="text-2xl font-bold text-blue-600">TMC LIBRARY</span>
                         </a>
                         <!-- Close button for mobile -->
                         <button @click="isSidebarOpen = false" class="sm:hidden text-gray-500 hover:text-gray-700">

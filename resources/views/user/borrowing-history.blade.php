@@ -172,6 +172,15 @@
                                             <div class="mt-3 flex gap-2">
                                                 @if($borrowing->return_requested)
                                                     <span class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">Return requested</span>
+                                                    <form action="{{ route('books.cancel-return', $borrowing->book) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" 
+                                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                                                            <i class="fas fa-times mr-1.5"></i>
+                                                            Cancel Request
+                                                        </button>
+                                                    </form>
                                                 @else
                                                     <form action="{{ route('books.return', $borrowing->book) }}" method="POST">
                                                         @csrf

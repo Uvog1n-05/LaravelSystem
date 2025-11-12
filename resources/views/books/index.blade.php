@@ -379,7 +379,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="footer-section">
-                <h3 class="text-lg font-semibold text-white mb-4">About AllReads</h3>
+                <h3 class="text-lg font-semibold text-white mb-4">About TMC Library</h3>
                 <p class="text-gray-400">Your digital library for discovering and managing books.</p>
             </div>
 
@@ -400,14 +400,14 @@
             <div class="footer-section">
                 <h3 class="text-lg font-semibold text-white mb-4">Contact</h3>
                 <div class="space-y-2 text-gray-400">
-                    <p><i class="fas fa-envelope mr-2 text-blue-400"></i>info@allreads.com</p>
+                    <p><i class="fas fa-envelope mr-2 text-blue-400"></i>info@tmclibrary.com</p>
                     <p><i class="fas fa-phone mr-2 text-blue-400"></i>(123) 456-7890</p>
                 </div>
             </div>
         </div>
 
         <div class="mt-10 pt-8 border-t border-gray-700 text-center text-gray-500">
-            <p>&copy; {{ date('Y') }} <span class="text-blue-400 font-semibold">AllReads</span>. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} <span class="text-blue-400 font-semibold">TmcLibrary</span>. All rights reserved.</p>
         </div>
     </div>
 </footer>
