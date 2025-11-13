@@ -23,18 +23,68 @@
                             <p class="mt-1 text-sm text-gray-500">There are no borrow requests to process at this time.</p>
                         </div>
                     @else
+                        <div class="mb-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <form method="GET" action="{{ route('admin.borrow-requests') }}" class="flex items-center space-x-2">
+                                    {{-- preserve sort & direction in filter form --}}
+                                    <input type="hidden" name="sort" value="{{ $sort ?? request('sort') }}">
+                                    <input type="hidden" name="direction" value="{{ $direction ?? request('direction') }}">
+                                    <label for="status" class="text-sm font-medium text-gray-700">Status:</label>
+                                    <select id="status" name="status" onchange="this.form.submit()" class="mt-1 block pl-3 pr-10 py-1 text-sm border-gray-200 rounded-md">
+                                        <option value="" {{ empty($status) ? 'selected' : '' }}>All</option>
+                                        <option value="pending" {{ (isset($status) && $status === 'pending') ? 'selected' : '' }}>Pending</option>
+                                        <option value="approved" {{ (isset($status) && $status === 'approved') ? 'selected' : '' }}>Approved</option>
+                                        <option value="declined" {{ (isset($status) && $status === 'declined') ? 'selected' : '' }}>Declined</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div>
+                                @if(!empty($status))
+                                    <a href="{{ request()->fullUrlWithQuery(['status' => null]) }}" class="text-sm text-blue-600 hover:underline">Reset</a>
+                                @endif
+                            </div>
+                        </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
+                                    @php
+                                        $currentSort = $sort ?? request('sort', 'created_at');
+                                        $currentDirection = $direction ?? request('direction', 'desc');
+
+                                        $toggle = function($field) use ($currentSort, $currentDirection) {
+                                            if ($currentSort === $field) {
+                                                return $currentDirection === 'asc' ? 'desc' : 'asc';
+                                            }
+                                            return 'desc';
+                                        };
+                                    @endphp
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Request Details
+                                            {{-- Main header sorts by user name --}} 
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'user', 'direction' => $toggle('user')]) }}" class="inline-flex items-center gap-2">
+                                                <span>Request Details</span>
+                                                @if($currentSort === 'user')
+                                                    <i class="fas fa-sort-amount-{{ $currentDirection === 'asc' ? 'up' : 'down' }} text-gray-400"></i>
+                                                @endif
+                                            </a>
+                                            {{-- small date sort link --}}
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => $toggle('created_at')]) }}" class="ml-2 text-xs text-gray-400">Date</a>
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Book
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'book', 'direction' => $toggle('book')]) }}" class="inline-flex items-center gap-2">
+                                                <span>Book</span>
+                                                @if($currentSort === 'book')
+                                                    <i class="fas fa-sort-amount-{{ $currentDirection === 'asc' ? 'up' : 'down' }} text-gray-400"></i>
+                                                @endif
+                                            </a>
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
+                                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'direction' => $toggle('status')]) }}" class="inline-flex items-center gap-2">
+                                                <span>Status</span>
+                                                @if($currentSort === 'status')
+                                                    <i class="fas fa-sort-amount-{{ $currentDirection === 'asc' ? 'up' : 'down' }} text-gray-400"></i>
+                                                @endif
+                                            </a>
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Actions

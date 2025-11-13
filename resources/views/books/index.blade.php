@@ -14,7 +14,7 @@
         <!-- Hero Section with Search -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg mb-12 text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h1 class="text-4xl font-bold mb-6">Find your next Book</h1>
+                <h1 class="text-4xl font-bold mb-6 text-white">Find your next Book</h1>
                 <p class="text-lg text-blue-100 mb-12">Explore our collection of amazing books</p>
                 
                 <!-- Search and Filters -->
@@ -204,22 +204,25 @@
                                                                     <i class="fas fa-book-reader mr-1.5"></i>Request to Borrow
                                                                 </button>
 
-                                                                <!-- Modal -->
-                                                                <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                                                                    <div @click.away="open = false" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                                                                        <h3 class="text-lg font-semibold">Request to Borrow</h3>
-                                                                        <p class="text-sm text-gray-600 mt-2">This book's due date (if approved) will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
-                                                                        <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-4">
-                                                                            @csrf
-                                                                            <label class="block text-sm font-medium text-gray-700">Reason for borrowing (optional)</label>
-                                                                            <textarea name="reason" rows="3" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm" placeholder="Briefly tell us why you want this book"></textarea>
-                                                                            <div class="mt-4 flex justify-end gap-2">
-                                                                                <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100">Cancel</button>
-                                                                                <button type="submit" class="px-4 py-2 text-sm rounded bg-indigo-600 text-white">Submit Request</button>
-                                                                            </div>
-                                                                        </form>
+                                                                <!-- Modal (teleported to body to avoid being clipped by carousel transforms) -->
+                                                                <template x-teleport="body">
+                                                                    <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                                                                        <div @click.away="open = false" role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-gray-900">
+                                                                            <h3 class="text-lg font-semibold text-gray-900">Request to Borrow</h3>
+                                                                            <p class="text-sm font-medium text-gray-800 mt-1">{{ $book->title }}</p>
+                                                                            <p class="text-sm text-gray-600 mt-2">This book's due date (if approved) will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
+                                                                            <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-4">
+                                                                                @csrf
+                                                                                <label class="block text-sm font-medium text-gray-900">Reason for borrowing (optional)</label>
+                                                                                <textarea name="reason" rows="3" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900" placeholder="Briefly tell us why you want this book"></textarea>
+                                                                                <div class="mt-4 flex justify-end gap-2">
+                                                                                    <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100 text-gray-700">Cancel</button>
+                                                                                    <button type="submit" class="px-4 py-2 text-sm rounded bg-indigo-600 text-white">Submit Request</button>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                </template>
                                                             </div>
                                                         @else
                                                             <span class="inline-block mt-2 w-full text-center text-xs bg-white/20 text-white px-3 py-1.5 rounded-lg">
@@ -266,6 +269,9 @@
                             init() {
                                 // initialize using the actual DOM elements (Alpine refs)
                                 const slidesCount = this.$refs.container.querySelectorAll('.swiper-slide').length;
+
+                                // timer id used to resume autoplay after user interaction
+                                this._autoplayResumeTimer = null;
 
                                 // Desired slides per view on desktop
                                 const desktopSlides = 4;
@@ -314,6 +320,51 @@
                                     if (e.key === 'ArrowLeft') this.swiper.slidePrev();
                                     if (e.key === 'ArrowRight') this.swiper.slideNext();
                                 });
+
+                                // Defensive: don't break init if anything goes wrong
+                                try {
+                                    if (this.swiper && this.swiper.autoplay && typeof this.swiper.autoplay.stop === 'function') {
+                                        const slides = this.$refs.container.querySelectorAll('.swiper-slide');
+
+                                        const resumeAutoplay = () => {
+                                            // clear any pending timers
+                                            if (this._autoplayResumeTimer) {
+                                                clearTimeout(this._autoplayResumeTimer);
+                                                this._autoplayResumeTimer = null;
+                                            }
+                                            try { this.swiper.autoplay.start(); } catch (e) { /* ignore */ }
+                                        };
+
+                                        const stopAutoplayTemporarily = (timeout = 8000) => {
+                                            try { this.swiper.autoplay.stop(); } catch (e) { /* ignore */ }
+                                            // schedule a resume after inactivity
+                                            if (this._autoplayResumeTimer) clearTimeout(this._autoplayResumeTimer);
+                                            this._autoplayResumeTimer = setTimeout(() => {
+                                                try { this.swiper.autoplay.start(); } catch (e) { /* ignore */ }
+                                                this._autoplayResumeTimer = null;
+                                            }, timeout);
+                                        };
+
+                                        slides.forEach(slide => {
+                                            // pointerdown covers mouse/touch/pen in modern browsers — resume after timeout
+                                            slide.addEventListener('pointerdown', () => stopAutoplayTemporarily());
+
+                                            // fallback for older touch events — resume after timeout
+                                            slide.addEventListener('touchstart', () => stopAutoplayTemporarily(), { passive: true });
+
+                                            // Additional mouse fallback: mousedown — resume after timeout
+                                            slide.addEventListener('mousedown', () => stopAutoplayTemporarily());
+
+                                            // Stop autoplay on hover (desktop UX) and resume on mouseleave immediately
+                                            slide.addEventListener('mouseenter', () => {
+                                                try { this.swiper.autoplay.stop(); } catch (e) { /* ignore */ }
+                                            });
+                                            slide.addEventListener('mouseleave', () => resumeAutoplay());
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.warn('Swiper autoplay hook error', e);
+                                }
                             }
                         }));
                     });
@@ -369,21 +420,24 @@
                                                     Request
                                                 </button>
 
-                                                <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                                                    <div @click.away="open = false" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                                                        <h3 class="text-lg font-semibold">Request to Borrow</h3>
-                                                        <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
-                                                        <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-4">
-                                                            @csrf
-                                                            <label class="block text-sm font-medium text-gray-700">Reason (optional)</label>
-                                                            <textarea name="reason" rows="3" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm" placeholder="Why do you want to borrow this book?"></textarea>
-                                                            <div class="mt-4 flex justify-end gap-2">
-                                                                <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100">Cancel</button>
-                                                                <button type="submit" class="px-4 py-2 text-sm rounded bg-blue-600 text-white">Submit Request</button>
-                                                            </div>
-                                                        </form>
+                                                <template x-teleport="body">
+                                                    <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                                                        <div @click.away="open = false" role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-gray-900">
+                                                            <h3 class="text-lg font-semibold text-gray-900">Request to Borrow</h3>
+                                                            <p class="text-sm font-medium text-gray-800 mt-1">{{ $book->title }}</p>
+                                                            <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
+                                                            <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-4">
+                                                                @csrf
+                                                                <label class="block text-sm font-medium text-gray-900">Reason (optional)</label>
+                                                                <textarea name="reason" rows="3" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900" placeholder="Why do you want to borrow this book?"></textarea>
+                                                                <div class="mt-4 flex justify-end gap-2">
+                                                                    <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100 text-gray-700">Cancel</button>
+                                                                    <button type="submit" class="px-4 py-2 text-sm rounded bg-blue-600 text-white">Submit Request</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </template>
                                             </div>
                                         @endif
                                     @endauth

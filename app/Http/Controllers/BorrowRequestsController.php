@@ -22,14 +22,47 @@ class BorrowRequestsController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        // For admin view
-        $requests = BorrowRequest::with(['user', 'book'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        // For admin view with optional sorting
+    $sort = $request->query('sort', 'created_at');
+    $direction = $request->query('direction', 'desc');
+    $status = $request->query('status', null);
 
-        return view('admin.borrow-requests.index', compact('requests'));
+        $allowedSorts = ['created_at', 'user', 'book', 'status'];
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'created_at';
+        }
+
+        $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
+
+        $query = BorrowRequest::with(['user', 'book']);
+
+        // Apply status filter if provided
+        $allowedStatuses = ['pending', 'approved', 'declined'];
+        if ($status && in_array($status, $allowedStatuses)) {
+            $query = $query->where('borrow_requests.status', $status);
+        }
+
+        // Apply sorting
+        if ($sort === 'user') {
+            // join users to order by user name
+            $query = $query->leftJoin('users', 'borrow_requests.user_id', '=', 'users.id')
+                ->select('borrow_requests.*')
+                ->orderBy('users.name', $direction);
+        } elseif ($sort === 'book') {
+            // join books to order by book title
+            $query = $query->leftJoin('books', 'borrow_requests.book_id', '=', 'books.id')
+                ->select('borrow_requests.*')
+                ->orderBy('books.title', $direction);
+        } else {
+            $query = $query->orderBy($sort, $direction);
+        }
+
+        // Preserve status in pagination links
+        $requests = $query->paginate(10)->appends($request->only(['sort', 'direction', 'status']));
+
+        return view('admin.borrow-requests.index', compact('requests', 'sort', 'direction', 'status'));
     }
 
     private const MAX_TOTAL_BOOKS = 5;

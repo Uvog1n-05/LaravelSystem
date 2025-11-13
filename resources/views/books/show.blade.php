@@ -63,21 +63,24 @@
                                         Request to Borrow
                                     </button>
 
-                                    <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                                        <div @click.away="open = false" class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-                                            <h3 class="text-lg font-semibold">Request to Borrow</h3>
-                                            <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
-                                            <form action="{{ route('borrow-requests.store', ['book' => $books->id]) }}" method="POST" class="mt-4">
-                                                @csrf
-                                                <label class="block text-sm font-medium text-gray-700">Reason for borrowing (optional)</label>
-                                                <textarea name="reason" rows="4" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm" placeholder="Tell us why you need this book"></textarea>
-                                                <div class="mt-4 flex justify-end gap-2">
-                                                    <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100">Cancel</button>
-                                                    <button type="submit" class="px-4 py-2 text-sm rounded bg-blue-600 text-white">Submit Request</button>
-                                                </div>
-                                            </form>
+                                    <template x-teleport="body">
+                                        <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                                            <div @click.away="open = false" role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 text-gray-900">
+                                                <h3 class="text-lg font-semibold text-gray-900">Request to Borrow</h3>
+                                                <p class="text-sm font-medium text-gray-800 mt-1">{{ $books->title }}</p>
+                                                <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
+                                                <form action="{{ route('borrow-requests.store', ['book' => $books->id]) }}" method="POST" class="mt-4">
+                                                    @csrf
+                                                    <label class="block text-sm font-medium text-gray-900">Reason for borrowing (optional)</label>
+                                                    <textarea name="reason" rows="4" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900" placeholder="Tell us why you need this book"></textarea>
+                                                    <div class="mt-4 flex justify-end gap-2">
+                                                        <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100 text-gray-700">Cancel</button>
+                                                        <button type="submit" class="px-4 py-2 text-sm rounded bg-blue-600 text-white">Submit Request</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </template>
                                 </div>
                             @else
                                 <span class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-200 rounded-md font-medium text-sm text-gray-500">

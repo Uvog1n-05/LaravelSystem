@@ -31,13 +31,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Enter Password</label>
                     <input 
                         type="password"
                         id="password"
                         name="password"
                         required
-                        placeholder="Enter Password"
+                        placeholder="*min 8 characters"
                     >
                 </div>
 
