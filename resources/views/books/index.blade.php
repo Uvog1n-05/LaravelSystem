@@ -70,6 +70,7 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    
                                 </div>
 
                                 <!-- Availability Filter -->
