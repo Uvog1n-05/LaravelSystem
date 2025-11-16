@@ -105,7 +105,8 @@ class BorrowRequestsController extends Controller
 
         // Validate and create the borrow request (store user's reason if provided)
         $data = $request->validate([
-            'reason' => ['nullable', 'string', 'max:2000']
+            'reason' => ['nullable', 'string', 'max:2000'],
+            'extension' => ['nullable', 'integer', 'in:0,1,2']
         ]);
 
         BorrowRequest::create([

@@ -48,7 +48,7 @@
                         id="password_confirmation"
                         name="password_confirmation"
                         required
-                        placeholder="Confirm your password"
+                       
                     >
                 </div>
 

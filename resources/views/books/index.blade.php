@@ -199,7 +199,7 @@
                                                     <p class="text-xs text-white/80">by {{ $book->author }}</p>
                                                     @auth
                                                         @if($book->number_of_books > 0)
-                                                            <div x-data="{ open:false }" @click.stop>
+                                                            <div x-data="{ open:false, extension: 0 }" @click.stop>
                                                                 <button @click="open = true" type="button"
                                                                     class="w-full text-xs bg-white/90 hover:bg-white text-indigo-600 px-3 py-1.5 rounded-lg font-medium transition-colors duration-200">
                                                                     <i class="fas fa-book-reader mr-1.5"></i>Request to Borrow
@@ -211,10 +211,17 @@
                                                                         <div @click.away="open = false" role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-gray-900">
                                                                             <h3 class="text-lg font-semibold text-gray-900">Request to Borrow</h3>
                                                                             <p class="text-sm font-medium text-gray-800 mt-1">{{ $book->title }}</p>
-                                                                            <p class="text-sm text-gray-600 mt-2">This book's due date (if approved) will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
+                                                                            <p class="text-sm text-gray-600 mt-2">This book's due date (if approved) will be: <strong x-text="new Date(Date.now() + ((14 + extension*7) * 24*60*60*1000)).toLocaleDateString('en-US',{ month: 'short', day: 'numeric', year: 'numeric' })">{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
                                                                             <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-4">
                                                                                 @csrf
-                                                                                <label class="block text-sm font-medium text-gray-900">Reason for borrowing (optional)</label>
+                                                                                <label class="block text-sm font-medium text-gray-900">Extension</label>
+                                                                                <select name="extension" x-model.number="extension" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900 py-2 px-2">
+                                                                                    <option value="0">Regular (14 days)</option>
+                                                                                    <option value="1">1 extension (+7 days)</option>
+                                                                                    <option value="2">2 extensions (+14 days)</option>
+                                                                                </select>
+
+                                                                                <label class="block text-sm font-medium text-gray-900 mt-4">Reason for borrowing (optional)</label>
                                                                                 <textarea name="reason" rows="3" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900" placeholder="Briefly tell us why you want this book"></textarea>
                                                                                 <div class="mt-4 flex justify-end gap-2">
                                                                                     <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100 text-gray-700">Cancel</button>
@@ -414,8 +421,8 @@
                                 </span>
                                 <div class="flex items-center space-x-2">
                                     @auth
-                                        @if($book->number_of_books > 0)
-                                            <div x-data="{ open:false }" class="inline-flex">
+                                            @if($book->number_of_books > 0)
+                                            <div x-data="{ open:false, extension: 0 }" class="inline-flex">
                                                 <button type="button" @click="open = true"
                                                     class="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full hover:bg-blue-200 transition-colors">
                                                     Request
@@ -426,10 +433,17 @@
                                                         <div @click.away="open = false" role="dialog" aria-modal="true" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 text-gray-900">
                                                             <h3 class="text-lg font-semibold text-gray-900">Request to Borrow</h3>
                                                             <p class="text-sm font-medium text-gray-800 mt-1">{{ $book->title }}</p>
-                                                            <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong>{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
+                                                            <p class="text-sm text-gray-600 mt-2">If approved, due date will be: <strong x-text="new Date(Date.now() + ((14 + extension*7) * 24*60*60*1000)).toLocaleDateString('en-US',{ month: 'short', day: 'numeric', year: 'numeric' })">{{ now()->addDays(14)->format('M d, Y') }}</strong></p>
                                                             <form action="{{ route('borrow-requests.store', ['book' => $book->id]) }}" method="POST" class="mt-4">
                                                                 @csrf
-                                                                <label class="block text-sm font-medium text-gray-900">Reason (optional)</label>
+                                                                <label class="block text-sm font-medium text-gray-900">Extension</label>
+                                                                <select name="extension" x-model.number="extension" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900 py-2 px-2">
+                                                                    <option value="0">Regular (14 days)</option>
+                                                                    <option value="1">1 extension (+7 days)</option>
+                                                                    <option value="2">2 extensions (+14 days)</option>
+                                                                </select>
+
+                                                                <label class="block text-sm font-medium text-gray-900 mt-4">Reason (optional)</label>
                                                                 <textarea name="reason" rows="3" class="mt-2 block w-full rounded-md border-gray-200 shadow-sm text-gray-900" placeholder="Why do you want to borrow this book?"></textarea>
                                                                 <div class="mt-4 flex justify-end gap-2">
                                                                     <button type="button" @click="open = false" class="px-4 py-2 text-sm rounded bg-gray-100 text-gray-700">Cancel</button>
